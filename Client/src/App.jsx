@@ -1,10 +1,12 @@
 import './App.css';
+import './fonts/fonts.css'
+import CommonNavbar from './components/CommonNavbar';
 
 function App() {
   return (
     <>
-      <h1 className="text-4xl font-bold text-center text-red-500 mt-10">
-        What's Up Bro
+      <h1 className="">
+      <CommonNavbar/>
       </h1>
     </>
   );
