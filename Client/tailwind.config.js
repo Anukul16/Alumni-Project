@@ -4,7 +4,17 @@ export default {
   theme: {
     extend: {
       colors: {
-        customColor: '#36567c', 
+        customColor: '#36567c',
+        primary: '#36567C',
+        secondary: '#1d4ed8',
+        text: '#333',
+        background: '#ffffff', 
+      },
+      fontFamily:{
+        header: ['Days One' , 'serif'],
+        body: ['Roboto' , 'sans-serif'],
+        bold:['Roboto-bold' , 'sans-serif']
+
       },
     },
     screens: {
@@ -15,7 +25,6 @@ export default {
       'lg':'1024px',
       'xl':'1280px',
       '2xl':'1536px'
-      
     },
   },
   plugins: [],
