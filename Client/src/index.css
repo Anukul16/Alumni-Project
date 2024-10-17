@@ -1,3 +1,9 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* text stroke custom css */
+.text-stroke {
+  -webkit-text-stroke: 1px black; /* For WebKit browsers */
+  text-stroke: 1px black; /* General property */
+}

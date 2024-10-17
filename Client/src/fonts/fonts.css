@@ -1,6 +1,10 @@
 @font-face {
-    font-family:  'Days One';
-    src: url('./DaysOne-Regular.ttf') format('truetype');
-    font-weight: normal;
-    font-style: normal;
+  font-family: "Days One";
+  src: url("./DaysOne-Regular.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+
+.font-days-one {
+  font-family: "Days One", sans-serif;
 }
