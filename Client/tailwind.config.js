@@ -18,13 +18,19 @@ export default {
       },
     },
     screens: {
+      // 'xxs':'320px',
       'xxs':'350px',
       'xs': '450px', 
       'sm': '640px',
       'md':'768px',
       'lg':'1024px',
+      'lg2':'1025px',
+      'lg2end':'1150',
       'xl':'1280px',
-      '2xl':'1536px'
+      '2xl':'1536px',
+      '3xl':'1730px'
+      // 'xl':'1280px',
+      // '2xl':'1536px'
     },
   },
   plugins: [],

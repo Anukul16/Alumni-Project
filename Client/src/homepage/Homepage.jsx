@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Navbar from '../components/Navbar';
+import CommonNavbar from '../components/CommonNavbar';
 
 
 
