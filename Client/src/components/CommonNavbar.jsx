@@ -1,5 +1,5 @@
 import  { useState } from 'react';
-
+import { Link } from 'react-router-dom';
 export default function CommonNavbar() {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -8,7 +8,7 @@ export default function CommonNavbar() {
   };
 
   return (
-    <div className="bg-primary text-white py-4 px-8 font-body">
+    <div className="bg-primary text-white py-4 px-8 font-body z-20">
       {/* Top Section: Company Name and Slogan */}
       <div className="flex justify-between items-center">
         <div className="flex flex-col text-center">
@@ -41,12 +41,12 @@ export default function CommonNavbar() {
 
       {/* Bottom Section: Navigation Links */}
       <div className={`md:flex md:space-x-8 py-4 ${isOpen ? "block" : "hidden"} md:block`}>
-        <a href="#home" className="block md:inline hover:text-gray-300 transition py-2 font-bold">Home</a>
-        <a href="#gallery" className="block md:inline hover:text-gray-300 transition py-2 font-bold">Gallery</a>
-        <a href="#magazine" className="block md:inline hover:text-gray-300 transition py-2 font-bold">Alumni</a>
-        <a href="#magazine" className="block md:inline hover:text-gray-300 transition py-2 font-bold">Career</a>
-        <a href="#magazine" className="block md:inline hover:text-gray-300 transition py-2 font-bold">E-Magazine</a>
-        <a href="#about" className="block md:inline hover:text-gray-300 transition py-2 font-bold">About Us</a>
+        <Link to="/" className="block md:inline hover:text-gray-300 transition py-2 font-bold">Home</Link>
+        <Link to="/gallery" className="block md:inline hover:text-gray-300 transition py-2 font-bold">Gallery</Link>
+        <Link to="/alumni" className="block md:inline hover:text-gray-300 transition py-2 font-bold">Alumni</Link>
+        <Link to="/career" className="block md:inline hover:text-gray-300 transition py-2 font-bold">Career</Link>
+        <Link to="/e-magazine" className="block md:inline hover:text-gray-300 transition py-2 font-bold">E-Magazine</Link>
+        <Link to="/about" className="block md:inline hover:text-gray-300 transition py-2 font-bold">About Us</Link>
       </div>
 
       {/* Mobile Menu: Login/Register */}
