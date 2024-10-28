@@ -5,7 +5,7 @@ export default {
     extend: {
       fontFamily:{
         header: ['Days One' , 'serif'],
-        body: ['Roboto' , 'sans-serif'],
+        body: ['Amaranth-Regular' , 'sans-serif'],
         bold:['Roboto-bold' , 'sans-serif']
 
       },
