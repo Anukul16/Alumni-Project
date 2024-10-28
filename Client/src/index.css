@@ -17,3 +17,8 @@
   .zoom-in {
     @apply animate-[zoom-in_0.3s_ease-in-out_forwards];
   }
+/* text stroke custom css */
+.text-stroke {
+  -webkit-text-stroke: 1px black; /* For WebKit browsers */
+  text-stroke: 1px black; /* General property */
+}

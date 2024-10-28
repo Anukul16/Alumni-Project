@@ -7,6 +7,8 @@ import './fonts/fonts.css'
 import CommonNavbar from './components/CommonNavbar';
 import Profile from './profilepage/Profile';
 import { Toaster } from 'react-hot-toast';
+import Gallery from "./gallary/Gallery";
+
 
 const App = () => {
   return (
@@ -23,11 +25,12 @@ const App = () => {
             </> 
           }
           />
+          <Route path="/gallery" element={<Gallery />} />
 
           </Routes>
         </Router>
     </>
-  );
-};
+  )
+}
 
 export default App;

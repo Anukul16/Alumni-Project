@@ -18,7 +18,8 @@ export default {
       },
     },
     screens: {
-      'xxs':'320px',
+      // 'xxs':'320px',
+      'xxs':'350px',
       'xs': '450px', 
       'sm': '640px',
       'md':'768px',
@@ -28,6 +29,8 @@ export default {
       'xl':'1280px',
       '2xl':'1536px',
       '3xl':'1730px'
+      // 'xl':'1280px',
+      // '2xl':'1536px'
     },
   },
   plugins: [],
