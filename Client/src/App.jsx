@@ -5,6 +5,7 @@ import "./App.css";
 import "./fonts/fonts.css";
 //import CommonNavbar from "./components/CommonNavbar";
 import Gallery from "./gallary/Gallery";
+import Career from "./career/Career";
 
 const App = () => {
   return (
@@ -12,6 +13,7 @@ const App = () => {
       <Routes>
         <Route path="/" element={<Homepage />} />
         <Route path="/gallery" element={<Gallery />} />
+        <Route path="/career" element={<Career />}></Route>
       </Routes>
     </Router>
   );
