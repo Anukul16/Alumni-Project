@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Homepage from './homepage/Homepage';
 import './App.css';
 import './fonts/fonts.css'
+import AlumniList from './components/AlumniList';
 import CommonNavbar from './components/CommonNavbar';
 import Profile from './profilepage/Profile';
 import { Toaster } from 'react-hot-toast';
@@ -16,6 +17,7 @@ const App = () => {
         <Toaster />
         <Router>
           <Routes>
+          
           <Route path='/' element={<Homepage />} />
           <Route path='/profile' 
           element={
@@ -26,9 +28,11 @@ const App = () => {
           }
           />
           <Route path="/gallery" element={<Gallery />} />
+          <Route path='/alumni' element={<AlumniList/>} />
 
           </Routes>
         </Router>
+
     </>
   )
 }
