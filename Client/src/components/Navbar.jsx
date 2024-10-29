@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { FaUserCircle } from 'react-icons/fa';
+import { FaUserCircle,FaUser,FaSignOutAlt } from 'react-icons/fa';
 
 const Navbar = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState(true); // State variable for authentication
-  const [isModalOpen, setIsModalOpen] = useState(false); // State variable for modal visibility
+  const [isAuthenticated, setIsAuthenticated] = useState(true); 
+  const [isModalOpen, setIsModalOpen] = useState(false); 
 
   const handleLogout = () => {
     setIsAuthenticated(false);
-    setIsModalOpen(false); // Close the modal upon logout
+    setIsModalOpen(false); 
   };
 
   return (
@@ -33,22 +33,24 @@ const Navbar = () => {
                 {/* Modal */}
                 {isModalOpen && (
                   <div className="absolute -right-2 top-8 sm:top-12 w-36 sm:w-40 bg-white rounded-md shadow-lg z-20">
-                    <div className="flex flex-col">
-                      <Link
-                        to="/profile"
-                        className="block px-4 py-2 text-gray-800 hover:bg-gray-200"
-                        onClick={() => setIsModalOpen(false)} // Close modal on link click
-                      >
-                        My Profile
-                      </Link>
-                      <button
-                        className="block text-left px-4 py-2 text-gray-800 hover:bg-gray-200"
-                        onClick={handleLogout} // Logout function
-                      >
-                        Logout
-                      </button>
-                    </div>
+                  <div className="flex flex-col">
+                    <Link
+                      to="/profile"
+                      className="flex items-center px-4 py-2 text-gray-800 hover:bg-gray-200"
+                      onClick={() => setIsModalOpen(false)} // Close modal on link click
+                    >
+                      <FaUser className="h-5 w-5 text-gray-600 mr-2" /> {/* Profile Icon */}
+                      My Profile
+                    </Link>
+                    <button
+                      className="flex items-center text-left px-4 py-2 text-gray-800 hover:bg-gray-200"
+                      onClick={handleLogout} // Logout function
+                    >
+                      <FaSignOutAlt className="h-5 w-5 text-gray-600 mr-2" /> {/* Logout Icon */}
+                      Logout
+                    </button>
                   </div>
+                </div>
                 )}
               </div>
             ) : (

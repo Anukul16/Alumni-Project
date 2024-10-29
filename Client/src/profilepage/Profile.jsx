@@ -43,7 +43,9 @@ const ProfileHeader = ({
   const [isCropping, setIsCropping] = useState(false);
   const [selectedProfile,setSelectedProfile] = useState(null)
   const [selectedCover,setSelectedCover] = useState(null)
-
+  const [removeProfile,setRemoveProfile] = useState(false)
+  const [removeCover,setRemoveCover] = useState(false)
+  const [isOpen,setIsOpen] = useState(false)
   
   const onDrop = useCallback((acceptedFiles) => {
     const file = acceptedFiles[0]; 
@@ -136,6 +138,27 @@ const ProfileHeader = ({
   const cancelCrop = () => {
     setIsCropping(false);
   };
+  const handleRemove = (option) => {
+    if(option == 'profile'){
+      setRemoveProfile(true)
+    } 
+    if(option == 'cover'){
+      setRemoveCover(true)
+    }
+    setIsOpen(true)
+  }
+  const handleClose = () => {
+    setIsOpen(false)
+  }
+  const handleDelete = () => {
+    if(removeProfile){
+      setProfilePic('')
+    }
+    if(removeCover){
+      setCoverPic('')
+    }
+    setIsOpen(false)
+  }
   
   return (
     <div className="w-full lg:w-[80%] flex flex-col justify-center items-center bg-gray-100 shadow-md rounded-lg">
@@ -190,7 +213,10 @@ const ProfileHeader = ({
                   <GrGallery className="mr-2" />
                   Choose profile picture
                 </button>
-                <button className="flex items-center w-full px-4 py-2 text-gray-700 hover:bg-gray-200 transition duration-200 ease-in-out font-body">
+                <button 
+                className="flex items-center w-full px-4 py-2 text-gray-700 hover:bg-gray-200 transition duration-200 ease-in-out font-body"
+                onClick={()=>handleRemove('profile')}
+                >
                   <MdDelete className="mr-2" />
                   Remove
                 </button>
@@ -216,7 +242,9 @@ const ProfileHeader = ({
                   <GrGallery className="mr-2" /> {/* Gallery icon */}
                   Choose cover picture
                 </button>
-                <button className="flex items-center  w-full px-4 py-2 text-gray-700 hover:bg-gray-200 transition duration-200 ease-in-out font-body">
+                <button className="flex items-center  w-full px-4 py-2 text-gray-700 hover:bg-gray-200 transition duration-200 ease-in-out font-body"
+                   onClick={()=>handleRemove('cover')}
+                >
                   <MdDelete className="mr-2" /> {/* Gallery icon */}
                   Remove
                 </button>
@@ -288,6 +316,32 @@ const ProfileHeader = ({
         <div {...getRootProps()}>
         <input {...getInputProps()} />
       </div>
+
+      {
+        isOpen && (
+              <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center z-50">
+              <div className="bg-white p-6 rounded-md shadow-lg w-80">
+                <h2 className="text-lg font-semibold mb-4">
+                  Are you sure you want to delete the {removeProfile ? 'profile' : removeCover ? 'cover' : ''} picture?
+                </h2>
+                <div className="flex justify-end space-x-4">
+                  <button
+                    onClick={handleClose}
+                    className="bg-gray-300 text-gray-700 px-4 py-2 rounded"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={handleDelete}
+                    className="bg-red-500 text-white px-4 py-2 rounded"
+                  >
+                    Yes
+                  </button>
+                </div>
+              </div>
+            </div>
+        )
+      }
     </div>
     
   );
