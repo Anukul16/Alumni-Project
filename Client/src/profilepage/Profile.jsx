@@ -30,7 +30,7 @@ const ProfileHeader = ({
   isChooseCoverClicked,
   onPictureRemove
 }) => {
-  const [ownProfile, setOwnProfile] = useState(false);
+  const [ownProfile, setOwnProfile] = useState(true);
   const [profilePic, setProfilePic] = useState(
     'https://i1.wp.com/static.toiimg.com/thumb/resizemode-4,width-1280,height-720,msid-102851686/102851686.jpg?strip=all'
   );
@@ -270,7 +270,7 @@ const ProfileHeader = ({
             </button>
           </div>
         ) : (
-          <div className="flex justify-end items-center mt-4 md:mt-20">
+          <div className="flex justify-end items-center mt-20 md:mt-20 absolute right-8 lg:right-0">
             <CiHeart className="w-10 h-10 cursor-pointer" />
           </div>
         )}
@@ -1112,7 +1112,6 @@ const Profile = () => {
     if(isSeeProfileModalOpen || isProfileUpdated || isPictureRemove){
       console.log("I m here");
       setIsProfileUpdated(false)
-      setIsSeeProfileModalOpen(false)
       setIsPictureRemove(false)
 
       setShowProfileOptions(false)
