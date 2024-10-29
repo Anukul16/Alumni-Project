@@ -17,7 +17,6 @@ const Gallery = () => {
 
   return (
     <>
-      <CommonNavbar />
       <div className="flex flex-col items-center">
         {" "}
         {/* Flexbox centers content horizontally */}

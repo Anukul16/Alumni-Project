@@ -148,10 +148,10 @@ const Testimonial = () => {
   return (
     <div className="py-10 px-5">
       <h2 className=" text-gray-400 text-center text-2xl font-bold mb-6">Testimonial</h2>
-      <div className="flex flex-wrap justify-center shadow-xl">
-        <div className="relative w-full mx-auto overflow-hidden flex flex-col sm:flex-row px-6 sm:px-10 lg:px-20 py-4 sm:py-6 ">
+      <div className="flex flex-wrap justify-center border shadow-md ">
+        <div className="relative w-full mx-auto overflow-hidden flex flex-col sm:flex-row px-6 sm:px-10 lg:px-20 py-4 sm:py-6  ">
           {/* Profile image */}
-          <div className="border border-red-600 rounded-full overflow-hidden flex-shrink-0 w-32 h-32 sm:w-40 sm:h-40 lg:w-48 lg:h-48 mx-auto sm:mx-0 mb-4 sm:mb-0">
+          <div className=" rounded-full overflow-hidden flex-shrink-0 w-32 h-32 sm:w-40 sm:h-40 lg:w-48 lg:h-48 mx-auto sm:mx-0 mb-4 sm:mb-0">
             <img
               src={testimonial[currentIndex].src}
               alt="Profile"

@@ -3,6 +3,7 @@ export default {
   content: ["./src/**/*.{html,js,jsx}"],
   theme: {
     extend: {
+
       colors: {
         customColor: '#36567c',
         primary: '#36567C',
@@ -10,9 +11,9 @@ export default {
         text: '#333',
         background: '#ffffff', 
       },
-      fontFamily:{
+       fontFamily:{
         header: ['Days One' , 'serif'],
-        body: ['Roboto' , 'sans-serif'],
+        body: ['Amaranth-Regular' , 'sans-serif'],
         bold:['Roboto-bold' , 'sans-serif']
 
       },
