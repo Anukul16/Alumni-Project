@@ -27,9 +27,10 @@ const ProfileHeader = ({
   onProfileUpdate,
   onChoosePictureClick,
   isChooseProfileClicked,
-  isChooseCoverClicked
+  isChooseCoverClicked,
+  onPictureRemove
 }) => {
-  const [ownProfile, setOwnProfile] = useState(true);
+  const [ownProfile, setOwnProfile] = useState(false);
   const [profilePic, setProfilePic] = useState(
     'https://i1.wp.com/static.toiimg.com/thumb/resizemode-4,width-1280,height-720,msid-102851686/102851686.jpg?strip=all'
   );
@@ -158,6 +159,7 @@ const ProfileHeader = ({
       setCoverPic('')
     }
     setIsOpen(false)
+    onPictureRemove(true)
   }
   
   return (
@@ -170,7 +172,7 @@ const ProfileHeader = ({
           onClick={onCoverOptionsClick}
         >
           <FaCamera className="text-black w-4 h-4" />
-          <span className="text-black text-md font-semibold ml-2 hidden xs:flex">
+          <span className="text-black text-md font-body ml-2 hidden xs:flex">
             Edit cover photo
           </span>
         </div>
@@ -321,7 +323,7 @@ const ProfileHeader = ({
         isOpen && (
               <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center z-50">
               <div className="bg-white p-6 rounded-md shadow-lg w-80">
-                <h2 className="text-lg font-semibold mb-4">
+                <h2 className="text-lg font-bold mb-4">
                   Are you sure you want to delete the {removeProfile ? 'profile' : removeCover ? 'cover' : ''} picture?
                 </h2>
                 <div className="flex justify-end space-x-4">
@@ -547,111 +549,6 @@ const ExperienceTimeline = () => {
   );
 };
 
-
-
-// const ExperienceTimeline = () => {
-//   const experiences = [
-//     {
-//       companyLogo:
-//         "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSiEndPkpxU-FDOQK0acJ6iuFECTI914xOelQ&s",
-//       companyName: "Google",
-//       roles: [
-//         {
-//           role: "Senior Software Engineer",
-//           startDate: "Jan 2022",
-//           endDate: "Present",
-//         },
-//         {
-//           role: "Software Engineer",
-//           startDate: "Jan 2020",
-//           endDate: "Dec 2021",
-//         },
-//         // Add other roles...
-//       ],
-//     },
-//     {
-//       companyLogo:
-//         "https://upload.wikimedia.org/wikipedia/commons/thumb/4/44/Microsoft_logo.svg/1200px-Microsoft_logo.svg.png",
-//       companyName: "Microsoft",
-//       roles: [
-//         {
-//           role: "Junior Developer",
-//           startDate: "May 2018",
-//           endDate: "Dec 2019",
-//         },
-//       ],
-//     },
-//     {
-//       companyLogo:
-//         "https://1000logos.net/wp-content/uploads/2017/04/Oracle-Logo.jpg",
-//       companyName: "Oracle",
-//       roles: [
-//         {
-//           role: "Junior Developer",
-//           startDate: "May 2018",
-//           endDate: "Dec 2019",
-//         },
-//       ],
-//     },
-//   ];
-
-//   return (
-//     <div className="mt-8 w-full lg:w-[80%] p-6 bg-white rounded-xl shadow-xl">
-//       <h2 className="text-3xl font-extrabold mb-8 text-gray-800">
-//         Professional Experience
-//       </h2>
-
-//       <div className="relative space-y-12">
-//         {experiences.map((exp, index) => (
-//           <div key={index} className="relative flex flex-col md:flex-row items-start">
-//             {/* Company Logo */}
-//             <div className="mb-4 md:mb-0 md:mr-6">
-//               {exp.companyLogo ? (
-//                 <img
-//                   src={exp.companyLogo}
-//                   alt={exp.companyName}
-//                   className="w-20 h-20 border-2 border-gray-300 object-cover rounded-full"
-//                 />
-//               ) : (
-//                 <div className="w-20 h-20 bg-gray-300 rounded-full flex items-center justify-center">
-//                   <span className="text-gray-500 text-lg">No Logo</span>
-//                 </div>
-//               )}
-//             </div>
-
-//             <div className="w-full">
-//               <h3 className="text-xl font-semibold text-gray-700">{exp.companyName}</h3>
-
-//               {/* Roles within the company */}
-//               <div className="relative ml-0 md:ml-6 mt-4 md:mt-0">
-//                 {exp.roles.map((role, roleIndex) => (
-//                   <div key={roleIndex} className="relative pl-10 mb-6">
-//                     <div
-//                       className={`absolute left-0 top-1 w-4 h-4 rounded-full ${
-//                         roleIndex === 0 ? "bg-blue-600" : "bg-gray-400"
-//                       }`}
-//                     ></div>
-
-//                     <div className="ml-6">
-//                       <p className="text-gray-800 font-medium">{role.role}</p>
-//                       <p className="text-sm text-gray-600">
-//                         {role.startDate} - {role.endDate}
-//                       </p>
-//                     </div>
-
-//                     {roleIndex !== exp.roles.length - 1 && (
-//                       <div className="absolute left-[7px] top-[22px] w-[2px] h-[50px] bg-gray-300"></div>
-//                     )}
-//                   </div>
-//                 ))}
-//               </div>
-//             </div>
-//           </div>
-//         ))}
-//       </div>
-//     </div>
-//   );
-// };
 
 
 
@@ -1146,6 +1043,7 @@ const Profile = () => {
   const [isProfileUpdated,setIsProfileUpdated]=useState(false)
   const [isChooseCoverClicked,setIsChooseCoverClicked] = useState(false)
   const [isChooseProfileClicked,setIsChooseProfileClicked] = useState(false)
+  const [isPictureRemove,setIsPictureRemove] = useState(false)
   // const [modalState,setModalState] = useState({
   //   isEditProfileModalOpen:false,
   //   isSeeProfileModalOpen:false,
@@ -1205,16 +1103,23 @@ const Profile = () => {
     if(option == 'choose profile'){
       setIsChooseProfileClicked(true)
     }
+  } 
+  const handlePictureRemove = (value) => {
+    setIsPictureRemove(value)
   }
   
   useEffect(()=>{
-    if(isSeeProfileModalOpen || isProfileUpdated){
+    if(isSeeProfileModalOpen || isProfileUpdated || isPictureRemove){
       console.log("I m here");
       setIsProfileUpdated(false)
+      setIsSeeProfileModalOpen(false)
+      setIsPictureRemove(false)
+
       setShowProfileOptions(false)
       setShowCoverOptions(false) 
     }
-  },[isSeeProfileModalOpen,isProfileUpdated])
+  },[isSeeProfileModalOpen,isProfileUpdated,isPictureRemove])
+  
 
 
 
@@ -1245,6 +1150,7 @@ const Profile = () => {
             onChoosePictureClick={handleChoosePicture}
             isChooseProfileClicked={isChooseProfileClicked}
             isChooseCoverClicked={isChooseCoverClicked}
+            onPictureRemove={handlePictureRemove}
           />
           <Details />
           <ExperienceTimeline />
