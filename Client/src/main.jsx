@@ -4,11 +4,15 @@ import App from './App.jsx'
 import './index.css'
 import {store} from './redux/store/Store.js'
 import { Provider } from 'react-redux'
+import { NextUIProvider } from '@nextui-org/react'
+
 
 createRoot(document.getElementById('root')).render(
   <Provider store={store}>
       <StrictMode>
-        <App />
+        <NextUIProvider>
+            <App />
+        </NextUIProvider>
       </StrictMode>
   </Provider>
   

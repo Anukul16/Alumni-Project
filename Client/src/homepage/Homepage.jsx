@@ -201,32 +201,33 @@ const Homepage = () => {
     console.log("ScrollDirection : ",scrollDirection);
     
   },[scrollDirection])
-  useEffect(() => {
-    const handleScroll = () => {
-      const currentScrollY = window.scrollY;
+  // useEffect(() => {
+  //   const handleScroll = () => {
+  //     const currentScrollY = window.scrollY;
 
-      if (currentScrollY > lastScrollY) {
-        setScrollDirection('down');
-      } else if (currentScrollY < lastScrollY) {
-        setScrollDirection('up');
-      }
+  //     if (currentScrollY > lastScrollY) {
+  //       setScrollDirection('down');
+  //     } else if (currentScrollY < lastScrollY) {
+  //       setScrollDirection('up');
+  //     }
 
       
       
-      setLastScrollY(currentScrollY);
-    };
+  //     setLastScrollY(currentScrollY);
+  //   };
 
-    window.addEventListener('scroll', handleScroll);
+  //   window.addEventListener('scroll', handleScroll);
 
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-    };
-  }, [lastScrollY]);
+  //   return () => {
+  //     window.removeEventListener('scroll', handleScroll);
+  //   };
+  // }, [lastScrollY]);
 
   return(
     <>
       
-      {scrollDirection != 'down' && <Navbar />}
+      {/* {scrollDirection != 'down' && <Navbar />} */}
+      <Navbar />
       <Carousel />
       <WorkingCompanies />
       <FoundedCompanies />
