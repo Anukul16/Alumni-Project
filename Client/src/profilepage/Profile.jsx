@@ -30,7 +30,7 @@ const ProfileHeader = ({
   isChooseCoverClicked,
   onPictureRemove
 }) => {
-  const [ownProfile, setOwnProfile] = useState(false);
+  const [ownProfile, setOwnProfile] = useState(true);
   const [profilePic, setProfilePic] = useState(
     'https://i1.wp.com/static.toiimg.com/thumb/resizemode-4,width-1280,height-720,msid-102851686/102851686.jpg?strip=all'
   );

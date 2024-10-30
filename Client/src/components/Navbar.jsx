@@ -1,15 +1,25 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { FaUserCircle,FaUser,FaSignOutAlt } from 'react-icons/fa';
+import Login from './Login';
+import Register from './Register';
+import { useDisclosure } from '@nextui-org/react';
 
 const Navbar = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(true); 
   const [isModalOpen, setIsModalOpen] = useState(false); 
+  const [modalType,setModalType] = useState(null)
 
+  const {isOpen,onOpen,onClose} = useDisclosure()
   const handleLogout = () => {
     setIsAuthenticated(false);
     setIsModalOpen(false); 
   };
+  const handleModal = (type) => {
+    
+    setModalType(type)
+    onOpen()
+  }
 
   return (
     <nav className="fixed w-full z-10 bg-transparent border border-black/20 shadow-md sm:px-10">
@@ -55,9 +65,9 @@ const Navbar = () => {
               </div>
             ) : (
               <>
-                <button className="text-white hover:text-gray-300">Login</button>
+                <button className="text-white hover:text-gray-300" onClick={()=>handleModal('login')}>Login</button>
                 <h6 className='text-white'>/</h6>
-                <button className="text-white hover:text-gray-300">Register</button>
+                <button className="text-white hover:text-gray-300" onClick={()=>handleModal('register')}>Register</button>
               </>
             )}
           </div>
@@ -72,6 +82,11 @@ const Navbar = () => {
           <Link to="/e-magazine" className="text-white hover:text-gray-300 text-xs sm:text-base font-semibold sm:font-bold">E-Magazine</Link>
         </div>
       </div>
+      {/* {
+        loginClicked ? <Login isOpen={}/> : registerClicked ? <Register /> : null
+      } */}
+      {modalType == 'login' && <Login isOpen={isOpen} onClose={onClose}/>}
+      {modalType == 'register' && <Register isOpen={isOpen} onClose={onClose}/>}
     </nav>
   );
 };
