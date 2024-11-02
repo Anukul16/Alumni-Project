@@ -4,14 +4,6 @@
   font-weight: normal;
   font-style: normal;
 }
-
-.font-days-one {
-  font-family: "Days One", sans-serif;
-  font-family: "Days One";
-  src: url("./DaysOne-Regular.ttf") format("truetype");
-  font-weight: normal;
-  font-style: normal;
-}
 @font-face {
   font-family: "Amaranth-Bold";
   src: url("./Amaranth-Bold.ttf");

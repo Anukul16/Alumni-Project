@@ -5,8 +5,7 @@ import PostForm from "./PostForm";
 const Career = () => {
   return (
     <div className="">
-      <CommonNavbar />
-      <div className="mt-[180px]">
+      <div className="mt-6">
         <PostForm profilePic={"https://picsum.photos/200/200"} />
         <Post
           imageUrl={"https://picsum.photos/200/200"}

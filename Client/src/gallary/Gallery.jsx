@@ -17,11 +17,10 @@ const Gallery = () => {
 
   return (
     <>
-      <CommonNavbar />
-      <div className="flex flex-col items-center mt-28  md:mt-[180px]  ">
+      <div className="flex flex-col items-center mt-4  md:mt-4  ">
         {" "}
         {/* Flexbox centers content horizontally */}
-        <h1 className="font-days-one text-center mb-6 text-4xl">
+        <h1 className="font-days-one text-center mb-8 text-4xl">
           “Gallery Where Memory Meets”
         </h1>
         <div className=" w-full h-auto grid grid-cols-1 pb-6 sm:grid-cols-2 lg:grid-cols-3 gap-6 px-4">
