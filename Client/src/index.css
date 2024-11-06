@@ -2,21 +2,20 @@
 @tailwind components;
 @tailwind utilities;
 
-
 @keyframes zoom-in {
-    0% {
-      transform: scale(0);
-      opacity: 0;
-    }
-    100% {
-      transform: scale(1);
-      opacity: 1;
-    }
+  0% {
+    transform: scale(0);
+    opacity: 0;
   }
-  
-  .zoom-in {
-    @apply animate-[zoom-in_0.3s_ease-in-out_forwards];
+  100% {
+    transform: scale(1);
+    opacity: 1;
   }
+}
+
+.zoom-in {
+  @apply animate-[zoom-in_0.3s_ease-in-out_forwards];
+}
 /* text stroke custom css */
 .text-stroke {
   -webkit-text-stroke: 1px black; /* For WebKit browsers */
