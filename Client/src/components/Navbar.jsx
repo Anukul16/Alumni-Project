@@ -1,16 +1,17 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import { FaUserCircle, FaUser, FaSignOutAlt } from "react-icons/fa";
-import Login from "./Login";
-import Register from "./Register";
-import { useDisclosure } from "@nextui-org/react";
+import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import { FaUserCircle,FaUser,FaSignOutAlt } from 'react-icons/fa';
+import Login from './Login';
+import Register from './Register';
+import { useDisclosure } from '@nextui-org/react';
 
 const Navbar = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState(true);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalType, setModalType] = useState(null);
-
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [isAuthenticated, setIsAuthenticated] = useState(false); 
+  const [isModalOpen, setIsModalOpen] = useState(false); 
+  const [modalType,setModalType] = useState(null)
+  
+  
+  const {isOpen,onOpen,onClose} = useDisclosure()
   const handleLogout = () => {
     setIsAuthenticated(false);
     setIsModalOpen(false);
@@ -19,6 +20,12 @@ const Navbar = () => {
     setModalType(type);
     onOpen();
   };
+  useEffect(()=>{
+    let isLoggedIn = localStorage?.getItem('userDetails')
+    if(isLoggedIn != null){
+      setIsAuthenticated(true)
+    }
+  },[isAuthenticated])
 
   return (
     <nav className="fixed w-full z-10 bg-transparent border border-black/20 shadow-md sm:px-10">
@@ -38,7 +45,7 @@ const Navbar = () => {
               <div className="relative flex items-center cursor-pointer">
                 <div
                   className="w-8 h-8 sm:w-12 sm:h-12 rounded-full bg-white flex items-center justify-center transition-transform duration-200 hover:scale-110 hover:bg-gray-200"
-                  onClick={() => setIsModalOpen(!isModalOpen)} // Toggle modal on click
+                  onClick={() => setIsModalOpen(!isModalOpen)} 
                 >
                   <FaUserCircle className="text-gray-600 w-6 h-6 sm:w-10 sm:h-10" />{" "}
                   {/* Profile icon */}
@@ -71,19 +78,9 @@ const Navbar = () => {
               </div>
             ) : (
               <>
-                <button
-                  className="text-white hover:text-gray-300"
-                  onClick={() => handleModal("login")}
-                >
-                  Login
-                </button>
-                <h6 className="text-white">/</h6>
-                <button
-                  className="text-white hover:text-gray-300"
-                  onClick={() => handleModal("register")}
-                >
-                  Register
-                </button>
+                <button className="text-white hover:text-gray-300" onClick={()=>handleModal('login')}>Login</button>
+                <h6 className='text-white'>/</h6>
+                <button className="text-white hover:text-gray-300" onClick={()=>handleModal('register')}>Register</button>
               </>
             )}
           </div>
@@ -131,10 +128,8 @@ const Navbar = () => {
       {/* {
         loginClicked ? <Login isOpen={}/> : registerClicked ? <Register /> : null
       } */}
-      {modalType == "login" && <Login isOpen={isOpen} onClose={onClose} />}
-      {modalType == "register" && (
-        <Register isOpen={isOpen} onClose={onClose} />
-      )}
+      {modalType == 'login' && <Login isOpen={isOpen} onClose={onClose}/>}
+      {modalType == 'register' && <Register isOpen={isOpen} onClose={onClose}/>}
     </nav>
   );
 };
