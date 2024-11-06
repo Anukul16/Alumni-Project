@@ -1,40 +1,44 @@
-
 import React from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
 import Homepage from './homepage/Homepage';
 import './App.css';
-import './fonts/fonts.css'
+import './fonts/fonts.css';
 import AlumniList from './components/AlumniList';
 import CommonNavbar from './components/CommonNavbar';
 import Profile from './profilepage/Profile';
 import { Toaster } from 'react-hot-toast';
-import Gallery from "./gallary/Gallery";
+import Gallery from './gallary/Gallery';
 
+import AboutUs from './about/About';
+
+const Layout = ({ children }) => {
+  const location = useLocation();
+  
+  return (
+    <>
+      {location.pathname !== '/' && <CommonNavbar />}
+      {children}
+    </>
+  );
+};
 
 const App = () => {
   return (
     <>
-        <Toaster />
-        <Router>
+      <Toaster />
+      <Router>
+        <Layout>
           <Routes>
-          
-          <Route path='/' element={<Homepage />} />
-          <Route path='/profile' 
-          element={
-            <>
-              <CommonNavbar />
-              <Profile />
-            </> 
-          }
-          />
-          <Route path="/gallery" element={<Gallery />} />
-          <Route path='/alumni' element={<AlumniList/>} />
-
+            <Route path='/' element={<Homepage />} />
+            <Route path='/profile' element={<Profile />} />
+            <Route path='/gallery' element={<Gallery />} />
+            <Route path='/alumni' element={<AlumniList />} />
+            <Route path='/about' element={<AboutUs />} />
           </Routes>
-        </Router>
-
+        </Layout>
+      </Router>
     </>
-  )
+  );
 }
 
 export default App;

@@ -27,7 +27,8 @@ const ProfileHeader = ({
   onProfileUpdate,
   onChoosePictureClick,
   isChooseProfileClicked,
-  isChooseCoverClicked
+  isChooseCoverClicked,
+  onPictureRemove
 }) => {
   const [ownProfile, setOwnProfile] = useState(true);
   const [profilePic, setProfilePic] = useState(
@@ -43,7 +44,9 @@ const ProfileHeader = ({
   const [isCropping, setIsCropping] = useState(false);
   const [selectedProfile,setSelectedProfile] = useState(null)
   const [selectedCover,setSelectedCover] = useState(null)
-
+  const [removeProfile,setRemoveProfile] = useState(false)
+  const [removeCover,setRemoveCover] = useState(false)
+  const [isOpen,setIsOpen] = useState(false)
   
   const onDrop = useCallback((acceptedFiles) => {
     const file = acceptedFiles[0]; 
@@ -136,6 +139,28 @@ const ProfileHeader = ({
   const cancelCrop = () => {
     setIsCropping(false);
   };
+  const handleRemove = (option) => {
+    if(option == 'profile'){
+      setRemoveProfile(true)
+    } 
+    if(option == 'cover'){
+      setRemoveCover(true)
+    }
+    setIsOpen(true)
+  }
+  const handleClose = () => {
+    setIsOpen(false)
+  }
+  const handleDelete = () => {
+    if(removeProfile){
+      setProfilePic('')
+    }
+    if(removeCover){
+      setCoverPic('')
+    }
+    setIsOpen(false)
+    onPictureRemove(true)
+  }
   
   return (
     <div className="w-full lg:w-[80%] flex flex-col justify-center items-center bg-gray-100 shadow-md rounded-lg">
@@ -147,7 +172,7 @@ const ProfileHeader = ({
           onClick={onCoverOptionsClick}
         >
           <FaCamera className="text-black w-4 h-4" />
-          <span className="text-black text-md font-semibold ml-2 hidden xs:flex">
+          <span className="text-black text-md font-body ml-2 hidden xs:flex">
             Edit cover photo
           </span>
         </div>
@@ -190,7 +215,10 @@ const ProfileHeader = ({
                   <GrGallery className="mr-2" />
                   Choose profile picture
                 </button>
-                <button className="flex items-center w-full px-4 py-2 text-gray-700 hover:bg-gray-200 transition duration-200 ease-in-out font-body">
+                <button 
+                className="flex items-center w-full px-4 py-2 text-gray-700 hover:bg-gray-200 transition duration-200 ease-in-out font-body"
+                onClick={()=>handleRemove('profile')}
+                >
                   <MdDelete className="mr-2" />
                   Remove
                 </button>
@@ -216,7 +244,9 @@ const ProfileHeader = ({
                   <GrGallery className="mr-2" /> {/* Gallery icon */}
                   Choose cover picture
                 </button>
-                <button className="flex items-center  w-full px-4 py-2 text-gray-700 hover:bg-gray-200 transition duration-200 ease-in-out font-body">
+                <button className="flex items-center  w-full px-4 py-2 text-gray-700 hover:bg-gray-200 transition duration-200 ease-in-out font-body"
+                   onClick={()=>handleRemove('cover')}
+                >
                   <MdDelete className="mr-2" /> {/* Gallery icon */}
                   Remove
                 </button>
@@ -240,7 +270,7 @@ const ProfileHeader = ({
             </button>
           </div>
         ) : (
-          <div className="flex justify-end items-center mt-4 md:mt-20">
+          <div className="flex justify-end items-center mt-20 md:mt-20 absolute right-8 lg:right-0">
             <CiHeart className="w-10 h-10 cursor-pointer" />
           </div>
         )}
@@ -288,6 +318,32 @@ const ProfileHeader = ({
         <div {...getRootProps()}>
         <input {...getInputProps()} />
       </div>
+
+      {
+        isOpen && (
+              <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center z-50">
+              <div className="bg-white p-6 rounded-md shadow-lg w-80">
+                <h2 className="text-lg font-bold mb-4">
+                  Are you sure you want to delete the {removeProfile ? 'profile' : removeCover ? 'cover' : ''} picture?
+                </h2>
+                <div className="flex justify-end space-x-4">
+                  <button
+                    onClick={handleClose}
+                    className="bg-gray-300 text-gray-700 px-4 py-2 rounded"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={handleDelete}
+                    className="bg-red-500 text-white px-4 py-2 rounded"
+                  >
+                    Yes
+                  </button>
+                </div>
+              </div>
+            </div>
+        )
+      }
     </div>
     
   );
@@ -493,111 +549,6 @@ const ExperienceTimeline = () => {
   );
 };
 
-
-
-// const ExperienceTimeline = () => {
-//   const experiences = [
-//     {
-//       companyLogo:
-//         "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSiEndPkpxU-FDOQK0acJ6iuFECTI914xOelQ&s",
-//       companyName: "Google",
-//       roles: [
-//         {
-//           role: "Senior Software Engineer",
-//           startDate: "Jan 2022",
-//           endDate: "Present",
-//         },
-//         {
-//           role: "Software Engineer",
-//           startDate: "Jan 2020",
-//           endDate: "Dec 2021",
-//         },
-//         // Add other roles...
-//       ],
-//     },
-//     {
-//       companyLogo:
-//         "https://upload.wikimedia.org/wikipedia/commons/thumb/4/44/Microsoft_logo.svg/1200px-Microsoft_logo.svg.png",
-//       companyName: "Microsoft",
-//       roles: [
-//         {
-//           role: "Junior Developer",
-//           startDate: "May 2018",
-//           endDate: "Dec 2019",
-//         },
-//       ],
-//     },
-//     {
-//       companyLogo:
-//         "https://1000logos.net/wp-content/uploads/2017/04/Oracle-Logo.jpg",
-//       companyName: "Oracle",
-//       roles: [
-//         {
-//           role: "Junior Developer",
-//           startDate: "May 2018",
-//           endDate: "Dec 2019",
-//         },
-//       ],
-//     },
-//   ];
-
-//   return (
-//     <div className="mt-8 w-full lg:w-[80%] p-6 bg-white rounded-xl shadow-xl">
-//       <h2 className="text-3xl font-extrabold mb-8 text-gray-800">
-//         Professional Experience
-//       </h2>
-
-//       <div className="relative space-y-12">
-//         {experiences.map((exp, index) => (
-//           <div key={index} className="relative flex flex-col md:flex-row items-start">
-//             {/* Company Logo */}
-//             <div className="mb-4 md:mb-0 md:mr-6">
-//               {exp.companyLogo ? (
-//                 <img
-//                   src={exp.companyLogo}
-//                   alt={exp.companyName}
-//                   className="w-20 h-20 border-2 border-gray-300 object-cover rounded-full"
-//                 />
-//               ) : (
-//                 <div className="w-20 h-20 bg-gray-300 rounded-full flex items-center justify-center">
-//                   <span className="text-gray-500 text-lg">No Logo</span>
-//                 </div>
-//               )}
-//             </div>
-
-//             <div className="w-full">
-//               <h3 className="text-xl font-semibold text-gray-700">{exp.companyName}</h3>
-
-//               {/* Roles within the company */}
-//               <div className="relative ml-0 md:ml-6 mt-4 md:mt-0">
-//                 {exp.roles.map((role, roleIndex) => (
-//                   <div key={roleIndex} className="relative pl-10 mb-6">
-//                     <div
-//                       className={`absolute left-0 top-1 w-4 h-4 rounded-full ${
-//                         roleIndex === 0 ? "bg-blue-600" : "bg-gray-400"
-//                       }`}
-//                     ></div>
-
-//                     <div className="ml-6">
-//                       <p className="text-gray-800 font-medium">{role.role}</p>
-//                       <p className="text-sm text-gray-600">
-//                         {role.startDate} - {role.endDate}
-//                       </p>
-//                     </div>
-
-//                     {roleIndex !== exp.roles.length - 1 && (
-//                       <div className="absolute left-[7px] top-[22px] w-[2px] h-[50px] bg-gray-300"></div>
-//                     )}
-//                   </div>
-//                 ))}
-//               </div>
-//             </div>
-//           </div>
-//         ))}
-//       </div>
-//     </div>
-//   );
-// };
 
 
 
@@ -1092,6 +1043,7 @@ const Profile = () => {
   const [isProfileUpdated,setIsProfileUpdated]=useState(false)
   const [isChooseCoverClicked,setIsChooseCoverClicked] = useState(false)
   const [isChooseProfileClicked,setIsChooseProfileClicked] = useState(false)
+  const [isPictureRemove,setIsPictureRemove] = useState(false)
   // const [modalState,setModalState] = useState({
   //   isEditProfileModalOpen:false,
   //   isSeeProfileModalOpen:false,
@@ -1151,16 +1103,22 @@ const Profile = () => {
     if(option == 'choose profile'){
       setIsChooseProfileClicked(true)
     }
+  } 
+  const handlePictureRemove = (value) => {
+    setIsPictureRemove(value)
   }
   
   useEffect(()=>{
-    if(isSeeProfileModalOpen || isProfileUpdated){
+    if(isSeeProfileModalOpen || isProfileUpdated || isPictureRemove){
       console.log("I m here");
       setIsProfileUpdated(false)
+      setIsPictureRemove(false)
+
       setShowProfileOptions(false)
       setShowCoverOptions(false) 
     }
-  },[isSeeProfileModalOpen,isProfileUpdated])
+  },[isSeeProfileModalOpen,isProfileUpdated,isPictureRemove])
+  
 
 
 
@@ -1191,6 +1149,7 @@ const Profile = () => {
             onChoosePictureClick={handleChoosePicture}
             isChooseProfileClicked={isChooseProfileClicked}
             isChooseCoverClicked={isChooseCoverClicked}
+            onPictureRemove={handlePictureRemove}
           />
           <Details />
           <ExperienceTimeline />

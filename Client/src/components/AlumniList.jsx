@@ -37,7 +37,6 @@ const AlumniList = () => {
 
   return (
     <>
-    <CommonNavbar/>
     <SearchBarWithFilter/>
     <div className="p-6">
       {Object.keys(groupedAlumni).map((batch) => (

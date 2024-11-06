@@ -1,15 +1,25 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { FaUserCircle } from 'react-icons/fa';
+import { FaUserCircle,FaUser,FaSignOutAlt } from 'react-icons/fa';
+import Login from './Login';
+import Register from './Register';
+import { useDisclosure } from '@nextui-org/react';
 
 const Navbar = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState(true); // State variable for authentication
-  const [isModalOpen, setIsModalOpen] = useState(false); // State variable for modal visibility
+  const [isAuthenticated, setIsAuthenticated] = useState(true); 
+  const [isModalOpen, setIsModalOpen] = useState(false); 
+  const [modalType,setModalType] = useState(null)
 
+  const {isOpen,onOpen,onClose} = useDisclosure()
   const handleLogout = () => {
     setIsAuthenticated(false);
-    setIsModalOpen(false); // Close the modal upon logout
+    setIsModalOpen(false); 
   };
+  const handleModal = (type) => {
+    
+    setModalType(type)
+    onOpen()
+  }
 
   return (
     <nav className="fixed w-full z-10 bg-transparent border border-black/20 shadow-md sm:px-10">
@@ -33,29 +43,31 @@ const Navbar = () => {
                 {/* Modal */}
                 {isModalOpen && (
                   <div className="absolute -right-2 top-8 sm:top-12 w-36 sm:w-40 bg-white rounded-md shadow-lg z-20">
-                    <div className="flex flex-col">
-                      <Link
-                        to="/profile"
-                        className="block px-4 py-2 text-gray-800 hover:bg-gray-200"
-                        onClick={() => setIsModalOpen(false)} // Close modal on link click
-                      >
-                        My Profile
-                      </Link>
-                      <button
-                        className="block text-left px-4 py-2 text-gray-800 hover:bg-gray-200"
-                        onClick={handleLogout} // Logout function
-                      >
-                        Logout
-                      </button>
-                    </div>
+                  <div className="flex flex-col">
+                    <Link
+                      to="/profile"
+                      className="flex items-center px-4 py-2 text-gray-800 hover:bg-gray-200"
+                      onClick={() => setIsModalOpen(false)} // Close modal on link click
+                    >
+                      <FaUser className="h-5 w-5 text-gray-600 mr-2" /> {/* Profile Icon */}
+                      My Profile
+                    </Link>
+                    <button
+                      className="flex items-center text-left px-4 py-2 text-gray-800 hover:bg-gray-200"
+                      onClick={handleLogout} // Logout function
+                    >
+                      <FaSignOutAlt className="h-5 w-5 text-gray-600 mr-2" /> {/* Logout Icon */}
+                      Logout
+                    </button>
                   </div>
+                </div>
                 )}
               </div>
             ) : (
               <>
-                <button className="text-white hover:text-gray-300">Login</button>
+                <button className="text-white hover:text-gray-300" onClick={()=>handleModal('login')}>Login</button>
                 <h6 className='text-white'>/</h6>
-                <button className="text-white hover:text-gray-300">Register</button>
+                <button className="text-white hover:text-gray-300" onClick={()=>handleModal('register')}>Register</button>
               </>
             )}
           </div>
@@ -70,6 +82,11 @@ const Navbar = () => {
           <Link to="/e-magazine" className="text-white hover:text-gray-300 text-xs sm:text-base font-semibold sm:font-bold">E-Magazine</Link>
         </div>
       </div>
+      {/* {
+        loginClicked ? <Login isOpen={}/> : registerClicked ? <Register /> : null
+      } */}
+      {modalType == 'login' && <Login isOpen={isOpen} onClose={onClose}/>}
+      {modalType == 'register' && <Register isOpen={isOpen} onClose={onClose}/>}
     </nav>
   );
 };
