@@ -1,5 +1,6 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import  { useState } from 'react';
+
+import { Link } from 'react-router-dom';
 export default function CommonNavbar() {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -8,6 +9,8 @@ export default function CommonNavbar() {
   };
 
   return (
+
+
     <div className="bg-primary text-white py-4 px-8 font-body z-20">
       {/* Top Section: Company Name and Slogan */}
       <div className="flex justify-between items-center">
