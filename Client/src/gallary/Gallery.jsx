@@ -17,13 +17,13 @@ const Gallery = () => {
 
   return (
     <>
-      <div className="flex flex-col items-center">
+      <div className="flex flex-col items-center mt-4  md:mt-4  ">
         {" "}
         {/* Flexbox centers content horizontally */}
-        <h1 className="font-days-one text-center mt-4 text-4xl">
+        <h1 className="font-days-one text-center mb-8 text-4xl">
           “Gallery Where Memory Meets”
         </h1>
-        <div className="mt-10 w-full h-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 px-4">
+        <div className=" w-full h-auto grid grid-cols-1 pb-6 sm:grid-cols-2 lg:grid-cols-3 gap-6 px-4">
           {galleryItems.map((items) => (
             <div
               key={items}
