@@ -24,9 +24,9 @@ const Gallery = () => {
           “Gallery Where Memory Meets”
         </h1>
         <div className="mt-10 w-full h-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 px-4">
-          {galleryItems.map((items) => (
+          {galleryItems.map((items,idx) => (
             <div
-              key={items}
+              key={idx}
               className="relative mx-auto w-full h-60 shadow-[0px_4px_8px_rgba(0,0,0,0.3)] flex flex-col items-center justify-center lg:w-96 md:w-full"
             >
               <img src={pin} alt="" className="absolute top-0 z-10" />
