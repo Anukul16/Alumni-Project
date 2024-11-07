@@ -1,80 +1,43 @@
-import React, {} from 'react';
+import axios from 'axios';
+import React, { useEffect, useState } from 'react';
 
 import { FaBriefcase } from 'react-icons/fa';
+import { useDispatch } from 'react-redux';
+import { updateExperience, updateProfileDetails } from '../redux/slices/UserSlice';
 
 
 
 const ExperienceTimeline = () => {
-    const experiences = [
-      {
-        companyLogo: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSiEndPkpxU-FDOQK0acJ6iuFECTI914xOelQ&s',
-        companyName: 'Google',
-        roles: [
-          {
-            role: 'Senior Software Engineer',
-            startDate: 'Jan 2022',
-            endDate: 'Present',
-          },
-          {
-            role: 'Software Engineer',
-            startDate: 'Jan 2020',
-            endDate: 'Dec 2021',
-          },
-          {
-            role: 'Software Engineer 2',
-            startDate: 'Jan 2018',
-            endDate: 'Jan 2020',
-          },
-          {
-            role: 'Software Engineer 3',
-            startDate: 'Jan 2018',
-            endDate: 'Jan 2020',
-          },
-          {
-            role: 'Software Engineer',
-            startDate: 'Jan 2018',
-            endDate: 'Jan 2020',
-          },
-          {
-            role: 'Software Engineer',
-            startDate: 'Jan 2018',
-            endDate: 'Jan 2020',
-          },
-          {
-            role: 'Software Engineer',
-            startDate: 'Jan 2018',
-            endDate: 'Jan 2020',
-          },
-        ],
-      },
-      {
-        companyLogo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/44/Microsoft_logo.svg/1200px-Microsoft_logo.svg.png',
-        companyName: 'Microsoft',
-        roles: [
-          {
-            role: 'Junior Developer',
-            startDate: 'May 2018',
-            endDate: 'Dec 2019',
-          },
-          {
-            role: 'Junior Developer',
-            startDate: 'May 2018',
-            endDate: 'Dec 2019',
-          }
-        ],
-      },
-      {
-        companyLogo: 'https://1000logos.net/wp-content/uploads/2017/04/Oracle-Logo.jpg', 
-        companyName: 'Oracle',
-        roles: [
-          {
-            role: 'Junior Developer',
-            startDate: 'May 2018',
-            endDate: 'Dec 2019',
-          }
-        ],
-      },
-    ];
+    const apiurl = import.meta.env.VITE_API_URL;
+    
+    const dispatch = useDispatch();
+    const [experiences,setExperiences] = useState([])
+
+    const fetchProfileDetails = async() => {
+      try{
+        let userDetails = localStorage.getItem('userDetails')
+        userDetails=JSON.parse(userDetails)
+        const resp = await axios.post(`${apiurl}/users/fetch_profile`,{
+          alumniId:userDetails.user_id
+        })
+        const res = resp.data
+        console.log(res);
+        
+        if(res.status != 'success'){
+
+        }else{
+          // console.log("Isarray: ",Array.isArray(res.extras[0].formattedExperience))
+          dispatch(updateProfileDetails(res.extras[0].profile))
+          dispatch(updateExperience(res.extras[0].formattedExperience))
+          setExperiences(res.extras[0].formattedExperience)
+        }
+      }catch(err){
+        console.log(err);
+      }
+    }
+    useEffect(()=>{
+      fetchProfileDetails()
+    },[])
   
     return (
       <div className="mt-8 w-full lg:w-[80%] p-4 bg-gray-100 rounded-lg shadow-lg z-30">
