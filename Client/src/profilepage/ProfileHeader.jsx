@@ -9,7 +9,7 @@ import toast from 'react-hot-toast';
 import {useDropzone} from 'react-dropzone'
 import Cropper from 'react-easy-crop'
 import { useSelector } from 'react-redux';
-
+import { Skeleton } from '@nextui-org/skeleton';
 
 
 
@@ -44,6 +44,7 @@ const ProfileHeader = ({
     const [removeCover,setRemoveCover] = useState(false)
     const [isOpen,setIsOpen] = useState(false)
     const userSelector = useSelector(state => state.userSlice);
+    const [isLoaded,setIsLoaded] = useState(false)
     const onDrop = useCallback((acceptedFiles) => {
       const file = acceptedFiles[0]; 
       const reader = new FileReader();
@@ -178,12 +179,14 @@ const ProfileHeader = ({
         <div className="relative flex flex-col md:flex-row items-start w-full lg:w-[80%] -mt-16 z-10 mb-6">
           {/* Profile Picture */}
           <div className="relative">
-            <img
-              src={profilePic}
-              alt="Profile"
-              className="w-32 h-32 md:w-40 md:h-40 rounded-full border-4 border-white shadow-lg object-cover"
-              style={{ aspectRatio: '1' }}
-            />
+            <Skeleton isLoaded={isLoaded} className={!isLoaded ? 'rounded-full border-4 border-white shadow-lg':''}>
+              <img
+                src={profilePic}
+                alt="Profile"
+                className="w-32 h-32 md:w-40 md:h-40 rounded-full border-4 border-white shadow-lg object-cover"
+                style={{ aspectRatio: '1' }}
+              />
+            </Skeleton>
             <div className="absolute top-[65%] left-[77%] flex justify-center items-center">
               <div
                 className="flex items-center justify-center rounded-full bg-gray-200 border border-gray-300 p-2 cursor-pointer"
@@ -251,9 +254,15 @@ const ProfileHeader = ({
             )}
           {/* User Information */}
           <div className="text-left ml-4 mt-4 md:mt-20">
-            <h2 className="text-2xl font-bold">{userSelector.profile[0]?.name}</h2>
-            <p className="text-lg text-gray-700 font-body">{userSelector.profile[0]?.designation}</p>
-            <p className="text-sm text-gray-500 font-body">{userSelector.profile[0]?.location}</p>
+            <Skeleton isLoaded={isLoaded} className='h-4 w-5/5 rounded-lg'>
+              <h2 className="text-2xl font-bold">{userSelector.profile[0]?.name}</h2>
+            </Skeleton>
+            <Skeleton isLoaded={isLoaded} className='h-4 w-4/5 rounded-lg mt-2'>
+              <p className="text-lg text-gray-700 font-body">{userSelector.profile[0]?.designation}</p>
+            </Skeleton>
+            <Skeleton isLoaded={isLoaded} className='h-4 w-3/5 mt-2 rounded-lg'>
+              <p className="text-sm text-gray-500 font-body">{userSelector.profile[0]?.location}</p>
+            </Skeleton>
           </div>
   
           {/* Edit Profile Button */}
