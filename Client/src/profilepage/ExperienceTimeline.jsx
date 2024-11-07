@@ -31,7 +31,7 @@ const ExperienceTimeline = () => {
           dispatch(updateProfileDetails(res.extras[0].profile))
           dispatch(updateExperience(res.extras[0].formattedExperience))
           setExperiences(res.extras[0].formattedExperience)
-          console.log(res.extras[0].formattedExperience);
+          // console.log(res.extras[0].formattedExperience);
           
         }
       }catch(err){
