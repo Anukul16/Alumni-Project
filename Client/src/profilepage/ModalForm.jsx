@@ -5,8 +5,6 @@ import { HiPlus, HiTrash } from 'react-icons/hi';
 import toast from 'react-hot-toast';
 import axios from 'axios';
 
-
-
 const ModalForm = ({ isOpen, onClose }) => {
     const [formData, setFormData] = useState({
       name: '',
@@ -173,7 +171,8 @@ const ModalForm = ({ isOpen, onClose }) => {
             currentAddress:currentAddress,
             permanentAddress:permanentAddress,
             skills:skills,
-            userId:user.user_id
+            userId:user.user_id,
+            companies:JSON.stringify(experiences)
           })
           let res = resp.data
           console.log("Res: ",res);
@@ -182,12 +181,17 @@ const ModalForm = ({ isOpen, onClose }) => {
             console.log("Something went wrong: ",res.message);
           }else{
             console.log("Succesfull");
+            onClose()
           }
         }
       }catch(err){
         console.log(err);
       }
     };
+    
+    const fetchData = async() => {
+      
+    }
     
     if (!isOpen) return null;
   

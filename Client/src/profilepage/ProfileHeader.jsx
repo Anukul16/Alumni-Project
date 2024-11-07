@@ -8,6 +8,7 @@ import { MdDelete } from "react-icons/md";
 import toast from 'react-hot-toast';
 import {useDropzone} from 'react-dropzone'
 import Cropper from 'react-easy-crop'
+import { useSelector } from 'react-redux';
 
 
 
@@ -42,7 +43,7 @@ const ProfileHeader = ({
     const [removeProfile,setRemoveProfile] = useState(false)
     const [removeCover,setRemoveCover] = useState(false)
     const [isOpen,setIsOpen] = useState(false)
-    
+    const userSelector = useSelector(state => state.userSlice);
     const onDrop = useCallback((acceptedFiles) => {
       const file = acceptedFiles[0]; 
       const reader = new FileReader();
@@ -205,7 +206,7 @@ const ProfileHeader = ({
                   
                   <button
                     className="flex items-center w-full px-4 py-2 text-gray-700 hover:bg-gray-200 transition duration-200 ease-in-out font-body"
-                    onClick={()=>{open();onChoosePictureClick('choose profile')}} // Trigger the file selection dialog
+                    onClick={()=>{open();onChoosePictureClick('choose profile')}}
                   >
                     <GrGallery className="mr-2" />
                     Choose profile picture
@@ -250,9 +251,9 @@ const ProfileHeader = ({
             )}
           {/* User Information */}
           <div className="text-left ml-4 mt-4 md:mt-20">
-            <h2 className="text-2xl font-bold">Anukul Maity</h2>
-            <p className="text-lg text-gray-700 font-body">Software Engineer at Teqsonic urieurei</p>
-            <p className="text-sm text-gray-500 font-body">Midnapore, West Bengal</p>
+            <h2 className="text-2xl font-bold">{userSelector.profile[0]?.name}</h2>
+            <p className="text-lg text-gray-700 font-body">{userSelector.profile[0]?.designation}</p>
+            <p className="text-sm text-gray-500 font-body">{userSelector.profile[0]?.location}</p>
           </div>
   
           {/* Edit Profile Button */}

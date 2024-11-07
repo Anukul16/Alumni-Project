@@ -33,7 +33,6 @@ const Login = ({isOpen,onClose}) =>  {
         toast.error(res.message);
       } else {
         toast.success('Login Successful');
-        
         localStorage.setItem('userDetails', JSON.stringify(res.extras[0]));
         onClose();
       }
