@@ -4,6 +4,7 @@ import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDi
 import { HiPlus, HiTrash } from 'react-icons/hi'; 
 import toast from 'react-hot-toast';
 import axios from 'axios';
+import { useSelector } from 'react-redux';
 
 const ModalForm = ({ isOpen, onClose }) => {
     const [formData, setFormData] = useState({
@@ -24,6 +25,7 @@ const ModalForm = ({ isOpen, onClose }) => {
     const [isSameAsPhone,setIsSameAsPhone] = useState(false)
     const [isSameAsCurrent,setIsSameAsCurrent] = useState(false)
     const [user,setUser] = useState(null)
+    const userSelector = useSelector(state => state.userSlice);
     const apiurl = import.meta.env.VITE_API_URL;
 
     useEffect(() => {
@@ -34,13 +36,27 @@ const ModalForm = ({ isOpen, onClose }) => {
         setFormData((prev) => ({
           ...prev,
           name: user_details.name || '',
+          passoutYear:user_details.passout_year || '',
+          designation: user_details.designation || '',
+          location: user_details.location || '',
           phoneNo: user_details.phone_number || '',
+          whatsappNo: user_details.whatsapp_number || '',
           emailId: user_details.email || '',
-          passoutYear:user_details.passout_year || ''
+          linkedinId: user_details.linkedin_id || '',
+          currentAddress: user_details.current_address || '',
+          permanentAddress: user_details.permanent_address || '',
+          skills: user_details.skills || '',
         }));
       }
     }, []);
-    
+    useEffect(()=>{
+      if(formData.phoneNo == formData.whatsappNo){
+        setIsSameAsPhone(true)
+      }
+      if(formData.currentAddress == formData.permanentAddress){
+        setIsSameAsCurrent(true)
+      }
+    },[isSameAsPhone,isSameAsCurrent])
     
   
     const handleChange = (e) => {
@@ -222,7 +238,7 @@ const ModalForm = ({ isOpen, onClose }) => {
           label="Passout Year"
           type="text"
           name="passoutYear"
-          placeholder="Your Name"
+          placeholder="Your passout year"
           value={formData.passoutYear}
           onChange={handleChange}
           required
@@ -284,6 +300,7 @@ const ModalForm = ({ isOpen, onClose }) => {
           placeholder="Email ID"
           value={formData.emailId}
           onChange={handleChange}
+          disabled={true}
         />
         
         <Input

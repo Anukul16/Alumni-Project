@@ -3,7 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
     profile:[],
     experience:[],
-    user:[]
+    user:{}
 }
 
 const userSlice = createSlice({
@@ -15,12 +15,18 @@ const userSlice = createSlice({
         },
         updateExperience(state,action){
             state.experience=action.payload
+        },
+        updateUserDetails(state,action){
+            state.user=action.payload
+            console.log("After redux: ",state.user);
+            
         }
     }
 })
 
 export const {
     updateProfileDetails,
-    updateExperience
+    updateExperience,
+    updateUserDetails
 } = userSlice.actions;
 export default userSlice.reducer;

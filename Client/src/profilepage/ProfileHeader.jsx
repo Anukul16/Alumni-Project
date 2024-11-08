@@ -1,4 +1,4 @@
-import React, { useState,useCallback} from 'react';
+import React, { useState,useCallback, useEffect} from 'react';
 import { CiHeart } from "react-icons/ci";
 import { MdEdit } from "react-icons/md";
 import { FaCamera } from 'react-icons/fa';
@@ -10,6 +10,7 @@ import {useDropzone} from 'react-dropzone'
 import Cropper from 'react-easy-crop'
 import { useSelector } from 'react-redux';
 import { Skeleton } from '@nextui-org/skeleton';
+import axios from 'axios';
 
 
 
@@ -23,16 +24,14 @@ const ProfileHeader = ({
     onProfileUpdate,
     onChoosePictureClick,
     isChooseProfileClicked,
+    setIsChooseProfileClicked,
     isChooseCoverClicked,
+    setIsChooseCoverClicked,
     onPictureRemove
   }) => {
     const [ownProfile, setOwnProfile] = useState(true);
-    const [profilePic, setProfilePic] = useState(
-      'https://i1.wp.com/static.toiimg.com/thumb/resizemode-4,width-1280,height-720,msid-102851686/102851686.jpg?strip=all'
-    );
-    const [coverPic, setCoverPic] = useState(
-      'https://plus.unsplash.com/premium_photo-1673177667569-e3321a8d8256?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8Y292ZXIlMjBwaG90b3xlbnwwfHwwfHx8MA%3D%3D'
-    );
+    const [profilePic, setProfilePic] = useState('');
+    const [coverPic, setCoverPic] = useState('');
     const [crop, setCrop] = useState({ x: 0, y: 0 });
     const [zoom, setZoom] = useState(1);
     const [croppedArea, setCroppedArea] = useState(null);
@@ -44,12 +43,33 @@ const ProfileHeader = ({
     const [removeCover,setRemoveCover] = useState(false)
     const [isOpen,setIsOpen] = useState(false)
     const userSelector = useSelector(state => state.userSlice);
-    const [isLoaded,setIsLoaded] = useState(false)
-    const onDrop = useCallback((acceptedFiles) => {
+    const [isLoaded,setIsLoaded] = useState(true)
+    const [imgFile,setImgFile] = useState('')
+    const apiurl = import.meta.env.VITE_API_URL;
+    const imgurl = import.meta.env.VITE_IMG_URL;
+    useEffect(()=>{
+      let userDetails = localStorage.getItem('userDetails');
+      userDetails=JSON.parse(userDetails)
+      
+      setProfilePic(userDetails.profile)
+      setCoverPic(userDetails.cover)
+    },[])
+    useEffect(()=>{
+      // console.log("profile: ",profilePic);
+      
+    },[profilePic])
+
+    const onDrop = useCallback(async(acceptedFiles) => {
       const file = acceptedFiles[0]; 
       const reader = new FileReader();
-      
+      if (file) {
+        reader.readAsDataURL(file);
+        // console.log("File: ",file);
+        // setImgFile(file)
+         
+      }
       reader.onloadend = () => {
+
         if(isChooseCoverClicked){
           console.log("if i am: ",isChooseCoverClicked);
           setSelectedCover(reader.result)
@@ -60,12 +80,64 @@ const ProfileHeader = ({
         setIsCropping(true); 
       };
   
-      if (file) {
-        reader.readAsDataURL(file); 
-      }
+      
+      
     }, [isChooseCoverClicked,isChooseProfileClicked]);
-  
+    function base64ToFile(base64String) {
+      // Derive the file extension
+      const match = base64String.match(/^data:(image\/\w+);base64,/);
+      const extension = match ? match[1].split('/')[1] : 'png'; // Default to png if not found
+      
+      // Generate a unique filename
+      const filename = `image_${Date.now()}.${extension}`;
+      
+      // Remove the Base64 prefix, if present
+      const cleanedBase64 = base64String.replace(/^data:image\/\w+;base64,/, '');
     
+      // Convert Base64 to binary data
+      const byteCharacters = atob(cleanedBase64);
+      const byteNumbers = Array.from(byteCharacters).map(char => char.charCodeAt(0));
+      const byteArray = new Uint8Array(byteNumbers);
+    
+      // Create and return the File object
+      return new File([byteArray], filename, { type: `image/${extension}` });
+    }
+    
+    const uploadPicture = async(file,type) => {
+      try{
+        let userDetails = localStorage.getItem('userDetails')
+        userDetails=JSON.parse(userDetails)
+        const formData = new FormData();
+        formData.append('alumniId',userDetails.user_id);
+        formData.append('type',type);
+        formData.append('file',file);
+        
+        const resp = await axios.post(`${apiurl}/uploads/upload`,formData,{
+          headers:{
+            "Content-Type":'multipart/form-data'
+          }
+        })
+        const res = resp.data;
+        // console.log("Res=========: ",res);
+        
+        if(res.status != 'success'){
+          console.log(res.message);
+        }else{
+          const userData = JSON.parse(localStorage.getItem('userDetails'));
+          if(type == 'profile'){
+            setProfilePic(res.extras[0])
+            userData.profile = res.extras[0];
+          }else if(type == 'cover'){
+            setCoverPic(res.extras[0])
+            userData.cover = res.extras[0];
+          }
+          localStorage.setItem('userDetails', JSON.stringify(userData));
+         
+        }
+      }catch(err){
+        console.error(err);
+      }
+    }
     
     const { getRootProps, getInputProps, open } = useDropzone({
       onDrop,
@@ -116,16 +188,26 @@ const ProfileHeader = ({
   
     const showCroppedImage = useCallback(async () => {
       try {
+        console.log([isChooseProfileClicked,isChooseCoverClicked]);
+        
         let picType = isChooseProfileClicked ? selectedProfile : isChooseCoverClicked ? selectedCover : ''
         const croppedImg = await getCroppedImg(picType, croppedArea);
+        
         setCroppedImage(croppedImg); 
+        let resFile = base64ToFile(croppedImg)
         if(isChooseProfileClicked){
           setProfilePic(croppedImg)
+          uploadPicture(resFile,'profile')
+          setIsChooseProfileClicked(false)
           toast.success('Profile Picture Updated Successfully')
+          
         }else if(isChooseCoverClicked){
           setCoverPic(croppedImg)
+          uploadPicture(resFile,'cover')
+          setIsChooseCoverClicked(false)
           toast.success('Cover Picture Updated Successfully')
         }
+        
         setIsCropping(false);
         onProfileUpdate(true)
       } catch (e) {
@@ -150,20 +232,50 @@ const ProfileHeader = ({
     }
     const handleDelete = () => {
       if(removeProfile){
-        setProfilePic('')
+        deletePicture('profile')
       }
       if(removeCover){
-        setCoverPic('')
+        deletePicture('cover')
       }
       setIsOpen(false)
       onPictureRemove(true)
+    }
+    const deletePicture = async(picType) => {
+      try{
+        const endpoint = picType === 'profile'
+            ? 'delete_profile_pic'
+            : picType === 'cover'
+              ? 'delete_cover_pic'
+              : null;
+        let userDetails = localStorage.getItem('userDetails')
+        userDetails=JSON.parse(userDetails)
+        
+        const resp = await axios.post(`${apiurl}/users/${endpoint}`,{
+          alumniId:userDetails.user_id
+        })
+        const res = resp.data
+        if(res.status != 'success'){
+          console.log(res.message);
+        }else{
+          if(picType == 'profile'){
+            userDetails.profile=''
+            setProfilePic('')
+          }else if(picType == 'cover'){
+            userDetails.cover=''
+            setCoverPic('')
+          }
+          localStorage.setItem('userDetails',JSON.stringify(userDetails))
+        }
+      }catch(err){
+        console.error(err);
+      }
     }
     
     return (
       <div className="w-full lg:w-[80%] flex flex-col justify-center items-center bg-gray-100 shadow-md rounded-lg">
         {/* Cover Section */}
         <div className="w-full h-32 sm:h-48 md:h-64 lg:h-80 bg-blue-500 relative overflow-hidden">
-          <img src={coverPic} alt="Cover" className="object-fill w-full h-full" />
+          <img src={coverPic ? `${imgurl}/${coverPic}` : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSZADoFa6P0jXUPhuoUhTgc2i2E3kSBJGHolA&s'} alt="Cover" className="object-fill w-full h-full" />
           <div
             className="absolute flex items-center bottom-3 right-6 cursor-pointer bg-white rounded-lg px-3.5 py-2 z-20"
             onClick={onCoverOptionsClick}
@@ -181,7 +293,8 @@ const ProfileHeader = ({
           <div className="relative">
             <Skeleton isLoaded={isLoaded} className={!isLoaded ? 'rounded-full border-4 border-white shadow-lg':''}>
               <img
-                src={profilePic}
+                key={true}
+                src={profilePic ? `${imgurl}/${profilePic}` : 'https://w7.pngwing.com/pngs/177/551/png-transparent-user-interface-design-computer-icons-default-stephen-salazar-graphy-user-interface-design-computer-wallpaper-sphere-thumbnail.png'}
                 alt="Profile"
                 className="w-32 h-32 md:w-40 md:h-40 rounded-full border-4 border-white shadow-lg object-cover"
                 style={{ aspectRatio: '1' }}
@@ -200,7 +313,7 @@ const ProfileHeader = ({
                 <div className="py-2">
                   <button
                     className="flex items-center w-full px-4 py-2 text-gray-700 hover:bg-gray-200 transition duration-200 ease-in-out font-body"
-                    onClick={() => onSeeProfileClick(profilePic,'see profile')}
+                    onClick={() => onSeeProfileClick(`${imgurl}/${profilePic}`,'see profile')}
                   >
                     <CgProfile className="mr-2" />
                     See profile picture
@@ -231,7 +344,7 @@ const ProfileHeader = ({
                 <div className="py-2">
                 <button
                   className="flex items-center w-full px-4 py-2 text-gray-700 hover:bg-gray-200 transition duration-200 ease-in-out font-body"
-                  onClick={() => onSeeProfileClick(coverPic,'see profile')} 
+                  onClick={() => onSeeProfileClick(`${imgurl}/${coverPic}`,'see profile')} 
                 >
                   <CgProfile className="mr-2" /> 
                   See cover picture
@@ -254,13 +367,13 @@ const ProfileHeader = ({
             )}
           {/* User Information */}
           <div className="text-left ml-4 mt-4 md:mt-20">
-            <Skeleton isLoaded={isLoaded} className='h-4 w-5/5 rounded-lg'>
+            <Skeleton isLoaded={isLoaded} className={!isLoaded?'h-3 w-3/5 rounded-lg':''}>
               <h2 className="text-2xl font-bold">{userSelector.profile[0]?.name}</h2>
             </Skeleton>
-            <Skeleton isLoaded={isLoaded} className='h-4 w-4/5 rounded-lg mt-2'>
+            <Skeleton isLoaded={isLoaded} className={!isLoaded?'h-3 w-4/5 rounded-lg mt-2':''}>
               <p className="text-lg text-gray-700 font-body">{userSelector.profile[0]?.designation}</p>
             </Skeleton>
-            <Skeleton isLoaded={isLoaded} className='h-4 w-3/5 mt-2 rounded-lg'>
+            <Skeleton isLoaded={isLoaded} className={!isLoaded?'h-3 w-5/5 mt-2 rounded-lg':''}>
               <p className="text-sm text-gray-500 font-body">{userSelector.profile[0]?.location}</p>
             </Skeleton>
           </div>

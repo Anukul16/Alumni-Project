@@ -1,49 +1,50 @@
 import React from 'react';
-
+import { FaGithub, FaLinkedin } from 'react-icons/fa';
+import { FaXTwitter } from "react-icons/fa6";
 
 const AboutUs = () => {
   const teamMembers = [
     {
-      name: 'Anukul Maity',
+      name: 'Naughty Girl',
       role: 'Full Stack Developer',
-      img: 'https://scontent-ccu1-2.xx.fbcdn.net/v/t39.30808-6/454491927_1354449345942669_4631559582116264192_n.jpg?_nc_cat=110&ccb=1-7&_nc_sid=6ee11a&_nc_ohc=kSlyuEqHzLQQ7kNvgELT87j&_nc_zt=23&_nc_ht=scontent-ccu1-2.xx&_nc_gid=AFISeyKIuyij7ha5KOeRN_T&oh=00_AYDfviyPFaidiM4cFiIrBjFU9SuPC0U6NKOLireYdBBIrQ&oe=6725BE9E',
+      img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS33KYkQXi40CaqRN4lof5MWFwpKOSTX6nHfw&s',
       socialLinks: {
         twitter: '#',
         github: '#',
-        linkedin: '#',
+        linkedin: 'https://www.linkedin.com/in/anukul-maity/',
       },
     },
     {
-      name: 'John Doe',
-      role: 'Frontend Developer',
-      img: 'https://c4.wallpaperflare.com/wallpaper/244/899/830/lana-rhoades-model-women-blue-eyes-wallpaper-preview.jpg',
-      socialLinks: {
-        twitter: '#',
-        github: '#',
-        linkedin: '#',
+      name:'Dani Daniels',
+      role:'Grinding',
+      img:'https://m.media-amazon.com/images/M/MV5BMjVjZjAzZjgtYTAxNS00ZmUwLTkwM2UtMWZlNmU4Mjc3ODJlXkEyXkFqcGc@._V1_.jpg',
+      socialLinks:{
+        twitter:'#',
+        github:'#',
+        linkedin:'#'
       },
     },
     {
-      name: 'Jane Smith',
-      role: 'Backend Developer',
-      img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQOgqEZvsRRwrHC3S55gMHbGkDzfE0CscgP6A&s',
-      socialLinks: {
-        twitter: '#',
-        github: '#',
-        linkedin: '#',
+      name:'Leah Gotti',
+      role:'Grinding',
+      img:'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRNpJOLKf4_8DPzUQoXcnK1ZY2EOaJ4iI1eIQ&s',
+      socialLinks:{
+        twitter:'#',
+        github:'#',
+        linkedin:'#'
       },
     },
     {
-      name: 'Dani Daniels',
-      role: 'Full Stack Developer',
-      img: 'https://wallpapers.com/images/hd/dani-daniels-selfie-ti7m9a0rvylikw42.jpg',
-      socialLinks: {
-        twitter: '#',
-        github: '#',
-        linkedin: '#',
+      name:'Dani Daniels',
+      role:'Grinding',
+      img:'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTbIjHzXcibPnvoPo4Eac_arv0nC6ZYae1Yqg&s',
+      socialLinks:{
+        twitter:'#',
+        github:'#',
+        linkedin:'#'
       },
-    },
-    // Add more team members here
+    }
+    // Add more team members as needed
   ];
 
   return (
@@ -57,7 +58,7 @@ const AboutUs = () => {
           {teamMembers.map((member) => (
             <div
               key={member.name}
-              className="bg-white rounded-lg shadow-xl p-6 flex flex-col items-center transition-transform transform hover:scale-105"
+              className="bg-white rounded-lg shadow-xl p-6 flex flex-col items-center transition-transform transform hover:scale-105 group"
             >
               <img
                 src={member.img}
@@ -66,15 +67,15 @@ const AboutUs = () => {
               />
               <h2 className="text-2xl font-bold text-gray-800">{member.name}</h2>
               <h3 className="text-gray-500 mb-3">{member.role}</h3>
-              <div className="flex space-x-4 mt-3">
-                <a href={member.socialLinks.twitter} className="text-blue-500 hover:text-blue-700 transition">
-                  <i className="fab fa-twitter"></i>
+              <div className="flex space-x-8 md:space-x-16 mt-3 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300">
+                <a href={member.socialLinks.twitter} className="text-gray-800 hover:text-gray-600 transition">
+                  <FaXTwitter size={24} />
                 </a>
                 <a href={member.socialLinks.github} className="text-gray-800 hover:text-gray-600 transition">
-                  <i className="fab fa-github"></i>
+                  <FaGithub size={24} />
                 </a>
                 <a href={member.socialLinks.linkedin} className="text-blue-600 hover:text-blue-800 transition">
-                  <i className="fab fa-linkedin"></i>
+                  <FaLinkedin size={24} />
                 </a>
               </div>
             </div>
