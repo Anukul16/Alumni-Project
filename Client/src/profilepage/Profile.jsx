@@ -69,19 +69,23 @@ const Profile = () => {
     setIsProfileUpdated(value)
   }
   const handleChoosePicture = (option) => {
-    if(option == 'choose cover'){
+    if(option === 'choose cover'){
       setIsChooseCoverClicked(true)
     }
-    if(option == 'choose profile'){
+    if(option === 'choose profile'){
       setIsChooseProfileClicked(true)
     }
   } 
+  useEffect(()=>{
+    // console.log("Res: ",[isChooseProfileClicked,isChooseCoverClicked]);
+    
+  },[isChooseProfileClicked,isChooseCoverClicked])
   const handlePictureRemove = (value) => {
     setIsPictureRemove(value)
   }
   
   useEffect(()=>{
-    if(isSeeProfileModalOpen || isProfileUpdated || isPictureRemove){
+    if(isSeeProfileModalOpen || isProfileUpdated || isPictureRemove ){
       console.log("I m here");
       setIsProfileUpdated(false)
       setIsPictureRemove(false)
@@ -120,7 +124,9 @@ const Profile = () => {
             onProfileUpdate={handleProfileUpdate}
             onChoosePictureClick={handleChoosePicture}
             isChooseProfileClicked={isChooseProfileClicked}
+            setIsChooseProfileClicked={setIsChooseProfileClicked}
             isChooseCoverClicked={isChooseCoverClicked}
+            setIsChooseCoverClicked={setIsChooseCoverClicked}
             onPictureRemove={handlePictureRemove}
           />
           <Details />

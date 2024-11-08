@@ -11,7 +11,7 @@ const Navbar = () => {
   const [modalType,setModalType] = useState(null)
   
   
-  const {isOpen,onOpen,onClose} = useDisclosure()
+  const {isOpen,onOpen,onClose} = useDisclosure();
   const handleLogout = () => {
     setIsAuthenticated(false);
     setIsModalOpen(false);

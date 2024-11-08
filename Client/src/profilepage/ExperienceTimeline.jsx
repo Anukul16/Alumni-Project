@@ -22,7 +22,7 @@ const ExperienceTimeline = () => {
           alumniId:userDetails.user_id
         })
         const res = resp.data
-        console.log(res);
+        // console.log(res);
         
         if(res.status != 'success'){
 

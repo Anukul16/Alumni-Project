@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import Navbar from '../components/Navbar';
 import CommonNavbar from '../components/CommonNavbar';
+import axios from 'axios';
+import { useDispatch } from 'react-redux';
+import { updateUserDetails } from '../redux/slices/UserSlice';
+import toast from 'react-hot-toast';
 
 
 
@@ -196,11 +200,33 @@ const Footer = () => {
 const Homepage = () => {
   const [scrollDirection, setScrollDirection] = useState(null);
   const [lastScrollY, setLastScrollY] = useState(0);
-
+  const apiurl = import.meta.env.VITE_API_URL;
+  const dispatch = useDispatch();
   useEffect(()=>{
     console.log("ScrollDirection : ",scrollDirection);
     
   },[scrollDirection])
+  useEffect(()=>{
+    fetchProfileDetails()
+  },[])
+  const fetchProfileDetails = async() => {
+    try{
+      let userDetails = localStorage.getItem('userDetails')
+      userDetails=JSON.parse(userDetails)
+      const resp = await axios.post(`${apiurl}/users/fetch_profile`,{
+        alumniId:userDetails?.user_id
+      })
+      const res = resp.data
+      
+      if(res.status != 'success'){
+        toast.error(res.message)
+      }else{
+        dispatch(updateUserDetails(userDetails))
+      }
+    }catch(err){
+      console.log(err);
+    }
+  }
   // useEffect(() => {
   //   const handleScroll = () => {
   //     const currentScrollY = window.scrollY;
