@@ -3,7 +3,8 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
     profile:[],
     experience:[],
-    user:{}
+    user:{},
+    isLoggedin:null
 }
 
 const userSlice = createSlice({
@@ -18,8 +19,10 @@ const userSlice = createSlice({
         },
         updateUserDetails(state,action){
             state.user=action.payload
-            console.log("After redux: ",state.user);
-            
+        },
+        updateLoginStatus(state,action){
+            state.isLoggedin=action.payload
+            console.log("Reduxlogin: ",state.isLoggedin);
         }
     }
 })
@@ -27,6 +30,7 @@ const userSlice = createSlice({
 export const {
     updateProfileDetails,
     updateExperience,
-    updateUserDetails
+    updateUserDetails,
+    updateLoginStatus
 } = userSlice.actions;
 export default userSlice.reducer;

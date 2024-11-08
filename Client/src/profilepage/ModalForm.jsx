@@ -360,11 +360,11 @@ const ModalForm = ({ isOpen, onClose }) => {
                 <div key={expIndex} className="bg-gray-100 p-4 rounded-md shadow-md relative">
                   <button
                     type="button"
-                    className="absolute top-2 right-2 text-red-500 hover:text-red-700 flex items-center"
+                    className="absolute top-2 right-0 xs:right-2 text-sm xs:text-medium text-red-500 hover:text-red-700 flex items-center"
                     onClick={() => handleRemoveExperience(expIndex)}
                   >
                     <HiTrash className="mr-1" /> {/* Remove experience icon */}
-                    Remove Experience
+                    Remove Company
                   </button>
                   <label className="block text-sm font-medium text-gray-700">Company Name</label>
                   <input

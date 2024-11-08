@@ -118,8 +118,6 @@ const ProfileHeader = ({
           }
         })
         const res = resp.data;
-        // console.log("Res=========: ",res);
-        
         if(res.status != 'success'){
           console.log(res.message);
         }else{
@@ -132,7 +130,6 @@ const ProfileHeader = ({
             userData.cover = res.extras[0];
           }
           localStorage.setItem('userDetails', JSON.stringify(userData));
-         
         }
       }catch(err){
         console.error(err);
@@ -185,11 +182,11 @@ const ProfileHeader = ({
   
       return canvas.toDataURL('image/jpeg'); 
     };
-  
+    // useEffect(()=>{
+    //   console.log("Cover: ",coverPic);
+    // },[coverPic])
     const showCroppedImage = useCallback(async () => {
       try {
-        console.log([isChooseProfileClicked,isChooseCoverClicked]);
-        
         let picType = isChooseProfileClicked ? selectedProfile : isChooseCoverClicked ? selectedCover : ''
         const croppedImg = await getCroppedImg(picType, croppedArea);
         
@@ -275,7 +272,7 @@ const ProfileHeader = ({
       <div className="w-full lg:w-[80%] flex flex-col justify-center items-center bg-gray-100 shadow-md rounded-lg">
         {/* Cover Section */}
         <div className="w-full h-32 sm:h-48 md:h-64 lg:h-80 bg-blue-500 relative overflow-hidden">
-          <img src={coverPic ? `${imgurl}/${coverPic}` : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSZADoFa6P0jXUPhuoUhTgc2i2E3kSBJGHolA&s'} alt="Cover" className="object-fill w-full h-full" />
+          <img src={coverPic ? `${imgurl}/${coverPic}` : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSiLff5M2CCoLu58Ybuz4BjyfYqTe3Ffv6Mng&s'} alt="Cover" className="object-fill w-full h-full" />
           <div
             className="absolute flex items-center bottom-3 right-6 cursor-pointer bg-white rounded-lg px-3.5 py-2 z-20"
             onClick={onCoverOptionsClick}
