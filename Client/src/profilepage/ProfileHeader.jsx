@@ -187,6 +187,8 @@ const ProfileHeader = ({
     // },[coverPic])
     const showCroppedImage = useCallback(async () => {
       try {
+        console.log([isChooseProfileClicked,isChooseCoverClicked]);
+        
         let picType = isChooseProfileClicked ? selectedProfile : isChooseCoverClicked ? selectedCover : ''
         const croppedImg = await getCroppedImg(picType, croppedArea);
         
