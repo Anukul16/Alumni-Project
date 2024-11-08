@@ -2,7 +2,6 @@ import React from 'react';
 import { FaGithub, FaLinkedin } from 'react-icons/fa';
 import { FaXTwitter } from "react-icons/fa6";
 
-
 const AboutUs = () => {
   const teamMembers = [
     {
