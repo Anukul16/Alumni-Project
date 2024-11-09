@@ -42,7 +42,7 @@ const AlumniList = () => {
         {Object.keys(groupedAlumni).map((batch) => (
           <div
           key={batch}
-          className={`mb-12 p-8 bg-white shadow-lg rounded-xl ${!isModalOpen ? 'transform transition-transform hover:scale-110' : ''}`}
+          className={`mb-8 p-4 bg-white shadow-lg rounded-xl ${!isModalOpen ? 'transform transition-transform hover:scale-105' : ''}`}
         >
         <h2 className="text-3xl font-bold text-purple-700 mb-6 text-center">{batch} Alumni</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6">
