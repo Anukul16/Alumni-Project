@@ -1,11 +1,11 @@
 import { useState } from 'react';
 
-const SearchBarWithFilter = () => {
+const SearchBarWithFilter = ({handleModal}) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filter, setFilter] = useState('all');
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  // Sample filter options
+  
   const filterOptions = [
     { label: 'All', value: 'all' },
     { label: 'Name A-Z', value: 'az' },
@@ -19,15 +19,17 @@ const SearchBarWithFilter = () => {
 
   const toggleModal = () => {
     setIsModalOpen(!isModalOpen);
+    handleModal(!isModalOpen);
+
   };
 
   const handleFilterChange = (value) => {
     setFilter(value);
-    setIsModalOpen(false); // Close modal after selection
+    setIsModalOpen(false); 
   };
 
   return (
-    <div className="flex justify-center p-6">
+    <div className="flex justify-center p-6 z-500">
       <div className="w-full max-w-2xl p-4 flex space-x-4 items-center">
         {/* Search Input */}
         <input
