@@ -5,9 +5,9 @@ import { FaXTwitter } from "react-icons/fa6";
 const AboutUs = () => {
   const teamMembers = [
     {
-      name: 'Naughty Girl',
+      name: 'Virat Kohli',
       role: 'Full Stack Developer',
-      img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS33KYkQXi40CaqRN4lof5MWFwpKOSTX6nHfw&s',
+      img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTr-TkEqCMp9GH1Mw4HxZUqIN3qU2US8WSsxA&s',
       socialLinks: {
         twitter: '#',
         github: '#',
@@ -15,9 +15,9 @@ const AboutUs = () => {
       },
     },
     {
-      name:'Dani Daniels',
+      name:'Alaistar Cook',
       role:'Grinding',
-      img:'https://m.media-amazon.com/images/M/MV5BMjVjZjAzZjgtYTAxNS00ZmUwLTkwM2UtMWZlNmU4Mjc3ODJlXkEyXkFqcGc@._V1_.jpg',
+      img:'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR4aIh5zqt_FEp23eonjT3x8TutoY3THPbkoQ&s',
       socialLinks:{
         twitter:'#',
         github:'#',
@@ -25,9 +25,9 @@ const AboutUs = () => {
       },
     },
     {
-      name:'Leah Gotti',
+      name:'Manish Pandey',
       role:'Grinding',
-      img:'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRNpJOLKf4_8DPzUQoXcnK1ZY2EOaJ4iI1eIQ&s',
+      img:'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSZw2xgW7t4iiaesXhl0k6SaUXlA_ydCwkwAw&s',
       socialLinks:{
         twitter:'#',
         github:'#',
@@ -35,9 +35,9 @@ const AboutUs = () => {
       },
     },
     {
-      name:'Dani Daniels',
+      name:'Rohit Sharma',
       role:'Grinding',
-      img:'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTbIjHzXcibPnvoPo4Eac_arv0nC6ZYae1Yqg&s',
+      img:'https://cdn.britannica.com/52/252752-050-2E120356/Cricketer-Rohit-Sharma-2023.jpg',
       socialLinks:{
         twitter:'#',
         github:'#',

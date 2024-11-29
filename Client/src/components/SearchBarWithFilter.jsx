@@ -1,44 +1,97 @@
 import { useEffect, useState } from 'react';
-import {Accordion, AccordionItem} from "@nextui-org/react";
-import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure,Select,SelectItem } from "@nextui-org/react";
+import { Accordion, AccordionItem } from "@nextui-org/react";
+import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure, Select, SelectItem } from "@nextui-org/react";
+import axios from 'axios';
 
-const SearchBarWithFilter = ({handleModal}) => {
+const SearchBarWithFilter = ({ onFilterChange } , searchQuery) => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [filter, setFilter] = useState('all');
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const {isOpen,onOpen,onClose,onOpenChange} = useDisclosure()
-  
-  const filterOptions = [
-    { label: 'All', value: 'all' },
-    { label: 'Name A-Z', value: 'az' },
-    { label: 'Name Z-A', value: 'za' },
-    { label: 'Most Recent', value: 'recent' },
-  ];
+  const [companies, setCompanies] = useState([]);
+  const [batches, setBatches] = useState([]);
+  const [techStacks, setTechStacks] = useState([]);
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   const handleSearchChange = (e) => {
     setSearchTerm(e.target.value);
-  };
-  // const openModal = () => {
-  //   onOpen();
-  // }
-  // const closeModal = () => {
-  //   onClose();
-  // }
-  const toggleModal = () => {
-    onOpen();
-    setIsModalOpen(!isModalOpen);
-    handleModal(!isModalOpen);
+    searchQuery(searchTerm);
   };
 
-  const handleFilterChange = (value) => {
-    setFilter(value);
-    setIsModalOpen(false); 
+  // Fetch all data from the company API
+  const getAllCompanies = async () => {
+    try {
+      const response = await axios.post('http://localhost:3000/users/getAllCompanyName');
+      const companyNames = response.data.extras
+        .map((item) => item.company)
+        .filter((company) => company !== null);
+      setCompanies(companyNames);
+      
+      
+    } catch (error) {
+      console.log(error);
+    }
   };
-  const animals = ["zebra", "tiger", "lion", "elephant", "crocodile", "whale","zebra", "tiger", "lion", "elephant", "crocodile", "whale"]
+
+  const getAllBatches = async () => {
+    try {
+      const response = await axios.post('http://localhost:3000/users/getAllBatchYears');
+      const batchYears = response.data.extras;
+      
+      // Correcting the typo here
+      const uniqueBatchYears = [...new Set(batchYears.map(batch => batch.passout_year))];
+      
+      setBatches(uniqueBatchYears);
+      console.log(uniqueBatchYears); // Check if the unique batch years are logged correctly
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  
+
+  const getAllTechStacks = async () => {
+    try {
+      const response = await axios.post('http://localhost:3000/users/getAllTechStacks');
+      const skillArray = response.data.extras.filter((item)=>item.skills).flatMap((item)=>item.skills.split(','));
+      const uniqueSkills = [...new Set(skillArray)];
+      setTechStacks(uniqueSkills);
+
+      console.log("Fetching all tech stacks...");
+      // Your logic to fetch tech stacks
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    getAllCompanies();
+    getAllBatches();
+    getAllTechStacks();
+  }, []);
+
+  const handleFilterChange = (filterType, value) => {
+
+    switch (filterType) {
+      case 'company':
+        onFilterChange(filterType, companies[value]);
+        console.log('Choosed filter type is :' , filterType ,"and the value is ----------->", companies[value]);
+        break;
+      case 'batch':
+        onFilterChange(filterType, batches[value]);
+        console.log('Choosed filter type is :' , filterType ,"and the value is ----------->", batches[value]);
+        break;
+      case 'techstack':
+        onFilterChange(filterType, techStacks[value]);
+        console.log('Choosed filter type is :' , filterType ,"and the value is ----------->", techStacks[value]);
+        break;
+      default:
+        break;
+    }
+    
+    // onFilterChange(filterType, value);
+    onClose();
+  };
+
   return (
     <div className="flex justify-center p-6 z-500">
       <div className="w-full max-w-2xl p-4 flex space-x-4 items-center"> 
-        {/* Search Input */}
         <input
           type="text"
           value={searchTerm}
@@ -48,7 +101,7 @@ const SearchBarWithFilter = ({handleModal}) => {
         />
 
         {/* Filter Icon */}
-        <button onClick={toggleModal} className="p-2 rounded-full bg-gray-200 hover:bg-gray-300">
+        <button onClick={onOpen} className="p-2 rounded-full bg-gray-200 hover:bg-gray-300">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -66,99 +119,77 @@ const SearchBarWithFilter = ({handleModal}) => {
         </button>
       </div>
 
-      {/* Filter Modal */}
-      {
-       (
-          <Modal
+      {isOpen && (
+        <Modal
           isOpen={isOpen}
-          onOpenChange={onOpenChange}
-          scrollBehavior='inside'
           onClose={onClose}
+          scrollBehavior="inside"
           backdrop="blur"
-          
-          placement='center'
+          placement="center"
         >
-        <ModalContent>
-            <>
-              <ModalHeader className="flex flex-col gap-1">
-                Filter Options
-              </ModalHeader>
-              <ModalBody>
+          <ModalContent>
+            <ModalHeader className="flex flex-col gap-1">
+              Filter Options
+            </ModalHeader>
+            <ModalBody>
               <Accordion variant="splitted">
                 <AccordionItem key="1" aria-label="Filter by company" title="Filter by company" className='bg-zinc-300'>
                   <Select
                     label="Choose Company"
-                        placeholder="Select a company"
-                    // disabledKeys={["zebra", "tiger", "lion", "elephant", "crocodile", "whale"]}
+                    placeholder="Select a company"
                     className="max-w-xs"
+                    onChange={(event) => handleFilterChange('company', event.target.value)}
+                    // onChange={(event) => console.log(event)}
                   >
-                    {animals.map((animal,id) => (
-                      <SelectItem key={id}>
-                        {animal}
+                    {companies.map((company, id) => (
+                      <SelectItem key={id} value={company}>
+                        {company}
                       </SelectItem>
                     ))}
                   </Select>
                 </AccordionItem>
                 <AccordionItem key="2" aria-label="Filter by batch" title="Filter by batch" className='bg-zinc-300'>
-                    <Select
-                        label="Choose Passout Year"
-                        placeholder="Select a year"
-                        // disabledKeys={["zebra", "tiger", "lion", "elephant", "crocodile", "whale"]}
-                        className="max-w-xs"
-                      >
-                        {animals.map((animal,id) => (
-                          <SelectItem key={id}>
-                            {animal}
-                          </SelectItem>
-                        ))}
-                      </Select>
+                  <Select
+                    label="Choose Passout Year"
+                    placeholder="Select a year"
+                    className="max-w-xs"
+                    onChange={(event) => handleFilterChange('batch', event.target.value)}
+                  >
+                    {batches.map((batch, id) => (
+                      <SelectItem key={id} value={batch}>
+                        {batch}
+                      </SelectItem>
+                    ))}
+                  </Select>
                 </AccordionItem>
                 <AccordionItem key="3" aria-label="Filter by techstack" title="Filter by techstack" className='bg-zinc-300'>
-                    <Select
-                        label="Choose Techstack"
-                        placeholder="Select a techstack"
-                        // disabledKeys={["zebra", "tiger", "lion", "elephant", "crocodile", "whale"]}
-                        className="max-w-xs"
-                      >
-                        {animals.map((animal,id) => (
-                          <SelectItem key={id}>
-                            {animal}
-                          </SelectItem>
-                        ))}
-                      </Select>
+                  <Select
+                    label="Choose Techstack"
+                    placeholder="Select a techstack"
+                    className="max-w-xs"
+                    onChange={(event) => handleFilterChange('techstack',event.target.value)}
+                    // onChange={(event) => console.log(event.target.value)}
+                  >
+                    {techStacks.map((techStack, id) => (
+                      <SelectItem key={id} value={techStack}>
+                        {techStack}
+                      </SelectItem>
+                    ))}
+                  </Select>
                 </AccordionItem>
               </Accordion>
-              </ModalBody>
-              <ModalFooter>
-                <Button color="danger" variant="light" onPress={onClose}>
-                  Close
-                </Button>
-                <Button color="primary" onPress={()=>{}}>
-                  Apply
-                </Button>
-              </ModalFooter>
-            </>
+            </ModalBody>
+            <ModalFooter>
+              <Button color="danger" variant="light" onPress={onClose}>
+                Close
+              </Button>
+              <Button color="primary">
+                Apply
+              </Button>
+            </ModalFooter>
           </ModalContent>
         </Modal>
-        )
-      }
-      {/* {isModalOpen && (
-      <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-      <div className="bg-white p-6 rounded-lg shadow-lg w-full sm:w-3/4 md:w-1/2 lg:w-1/3 xl:w-1/4">
-        <h3 className="text-lg font-medium mb-4">Filter Options</h3>
-        <ul>
-        
-        </ul>
-        <button
-          onClick={toggleModal}
-          className="mt-4 px-4 py-2 w-full bg-red-500 text-white rounded-md"
-        >
-          Close
-        </button>
-      </div>
-    </div>
-    
-      )} */}
+      )}
     </div>
   );
 };
