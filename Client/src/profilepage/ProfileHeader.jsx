@@ -11,6 +11,8 @@ import Cropper from 'react-easy-crop'
 import { useSelector } from 'react-redux';
 import { Skeleton } from '@nextui-org/skeleton';
 import axios from 'axios';
+import Followers from './Followers';
+import { useDisclosure } from '@nextui-org/react';
 
 
 
@@ -41,23 +43,66 @@ const ProfileHeader = ({
     const [selectedCover,setSelectedCover] = useState(null)
     const [removeProfile,setRemoveProfile] = useState(false)
     const [removeCover,setRemoveCover] = useState(false)
-    const [isOpen,setIsOpen] = useState(false)
+    const [isOpenn,setIsOpen] = useState(false)
     const userSelector = useSelector(state => state.userSlice);
     const [isLoaded,setIsLoaded] = useState(true)
     const [imgFile,setImgFile] = useState('')
+    const [connection,setConnection] = useState(null)
+    const [followersCount,setFollowersCount] = useState(0)
+    const [followingCount,setFollowingCount] = useState(0)
     const apiurl = import.meta.env.VITE_API_URL;
     const imgurl = import.meta.env.VITE_IMG_URL;
+    const {isOpen,onOpen,onClose} = useDisclosure();
     useEffect(()=>{
       let userDetails = localStorage.getItem('userDetails');
       userDetails=JSON.parse(userDetails)
       
       setProfilePic(userDetails.profile)
       setCoverPic(userDetails.cover)
+     
+      
     },[])
     useEffect(()=>{
-      // console.log("profile: ",profilePic);
-      
-    },[profilePic])
+      countFollowers();
+      countFollowing()
+    },[connection])
+    const countFollowers = async()=> {
+      try{
+        let userDetails = localStorage.getItem('userDetails');
+        userDetails=JSON.parse(userDetails)
+        const resp = await axios.post(`${apiurl}/userlike/count_followers`,{
+          alumniId:userDetails.user_id
+        })
+        let res = resp.data
+        if(res.status != 'success'){
+          toast.error(res.message)
+        }else{
+          setFollowersCount(res.extras[0][0]['COUNT(*)']);
+
+        }
+      }catch(err){
+        console.log(err);
+      }
+    }
+    const countFollowing = async()=> {
+      try{
+        let userDetails = localStorage.getItem('userDetails');
+        userDetails=JSON.parse(userDetails)
+        const resp = await axios.post(`${apiurl}/userlike/count_following`,{
+          alumniId:userDetails.user_id
+        })
+        let res = resp.data
+        if(res.status != 'success'){
+          toast.error(res.message)
+        }else{
+          setFollowingCount(res.extras[0][0]['COUNT(*)']);
+
+        }
+      }catch(err){
+        console.log(err);
+      }
+    }
+    
 
     const onDrop = useCallback(async(acceptedFiles) => {
       const file = acceptedFiles[0]; 
@@ -269,7 +314,9 @@ const ProfileHeader = ({
         console.error(err);
       }
     }
-    
+    const handleConnections = (type) => {
+      setConnection(type)
+    }
     return (
       <div className="w-full lg:w-[80%] flex flex-col justify-center items-center bg-gray-100 shadow-md rounded-lg">
         {/* Cover Section */}
@@ -365,6 +412,7 @@ const ProfileHeader = ({
               </div>
             )}
           {/* User Information */}
+          
           <div className="text-left ml-4 mt-4 md:mt-20">
             <Skeleton isLoaded={isLoaded} className={!isLoaded?'h-3 w-3/5 rounded-lg':''}>
               <h2 className="text-2xl font-bold">{userSelector.profile[0]?.name}</h2>
@@ -375,8 +423,8 @@ const ProfileHeader = ({
             <Skeleton isLoaded={isLoaded} className={!isLoaded?'h-3 w-5/5 mt-2 rounded-lg':''}>
               <p className="text-sm text-gray-500 font-body">{userSelector.profile[0]?.location}</p>
             </Skeleton>
+            
           </div>
-  
           {/* Edit Profile Button */}
           {ownProfile ? (
             <div className="absolute right-0 flex mt-20" onClick={onEditProfileClick}>
@@ -437,7 +485,7 @@ const ProfileHeader = ({
         </div>
   
         {
-          isOpen && (
+          isOpenn && (
                 <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center z-50">
                 <div className="bg-white p-6 rounded-md shadow-lg w-80">
                   <h2 className="text-lg font-bold mb-4">
@@ -461,6 +509,14 @@ const ProfileHeader = ({
               </div>
           )
         }
+        <div className="flex justify-center w-full mb-2">
+          <div className="flex w-[95%] lg:w-[75%] justify-start space-x-4">
+            <div className='font-medium text-blue-700 hover:cursor-pointer hover:underline' onClick={()=>handleConnections('followers')}>{followersCount} followers</div>
+            <div className='font-medium text-blue-700 hover:cursor-pointer hover:underline' onClick={()=>handleConnections('following')}>{followingCount} following</div>
+            
+          </div>
+        </div>
+        {connection && <Followers connection={connection}  onClose={()=>setConnection(null)}/>}
       </div>
       
     );

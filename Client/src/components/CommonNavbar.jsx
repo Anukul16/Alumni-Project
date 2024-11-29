@@ -36,7 +36,7 @@ export default function CommonNavbar() {
           isAuthenticated ? (
             <div
           className="w-8 h-8 sm:w-12 sm:h-12 rounded-full bg-white flex items-center justify-center transition-transform duration-200 hover:cursor-pointer hover:scale-110 hover:bg-gray-200"
-          onClick={() => setIsModalOpen(!isModalOpen)} 
+          // onClick={() => setIsModalOpen(!isModalOpen)} 
         >
           {/* <FaUserCircle className="text-gray-600 w-6 h-6 sm:w-10 sm:h-10" />{" "} */}
           <div
