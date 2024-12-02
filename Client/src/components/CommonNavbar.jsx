@@ -1,7 +1,13 @@
+<<<<<<< HEAD
 import { useEffect, useState } from "react";
 import { FaUserCircle } from "react-icons/fa";
 import { Avatar } from "@nextui-org/react";
 import { Link, useNavigate } from "react-router-dom";
+=======
+import  { useState } from 'react';
+
+import { Link } from 'react-router-dom';
+>>>>>>> 34fa07895dceb4d973f539bfdcb4986060f04679
 export default function CommonNavbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
