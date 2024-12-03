@@ -1,5 +1,6 @@
 import React, { useState,useCallback, useEffect} from 'react';
 import { CiHeart } from "react-icons/ci";
+import { FaHeart } from 'react-icons/fa';
 import { MdEdit } from "react-icons/md";
 import { FaCamera } from 'react-icons/fa';
 import { CgProfile } from "react-icons/cg";
@@ -29,7 +30,10 @@ const ProfileHeader = ({
     setIsChooseProfileClicked,
     isChooseCoverClicked,
     setIsChooseCoverClicked,
-    onPictureRemove
+    onPictureRemove,
+    userData,
+    setUserData,
+    dataLoaded
   }) => {
     const [ownProfile, setOwnProfile] = useState(true);
     const [profilePic, setProfilePic] = useState('');
@@ -45,7 +49,7 @@ const ProfileHeader = ({
     const [removeCover,setRemoveCover] = useState(false)
     const [isOpenn,setIsOpen] = useState(false)
     const userSelector = useSelector(state => state.userSlice);
-    const [isLoaded,setIsLoaded] = useState(true)
+    const [isLoaded,setIsLoaded] = useState(dataLoaded)
     const [imgFile,setImgFile] = useState('')
     const [connection,setConnection] = useState(null)
     const [followersCount,setFollowersCount] = useState(0)
@@ -53,10 +57,20 @@ const ProfileHeader = ({
     const apiurl = import.meta.env.VITE_API_URL;
     const imgurl = import.meta.env.VITE_IMG_URL;
     const {isOpen,onOpen,onClose} = useDisclosure();
+    const defaultProfile = 'https://w7.pngwing.com/pngs/177/551/png-transparent-user-interface-design-computer-icons-default-stephen-salazar-graphy-user-interface-design-computer-wallpaper-sphere-thumbnail.png'
+    const defaultCover = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSiLff5M2CCoLu58Ybuz4BjyfYqTe3Ffv6Mng&s'
+
+    useEffect(()=>{
+      // console.log("Dataloaded: ",dataLoaded);
+      if(dataLoaded){
+        setTimeout(()=>{
+          setIsLoaded(dataLoaded)
+        },2000)
+      }
+    },[dataLoaded])
     useEffect(()=>{
       let userDetails = localStorage.getItem('userDetails');
       userDetails=JSON.parse(userDetails)
-      
       setProfilePic(userDetails.profile)
       setCoverPic(userDetails.cover)
      
@@ -66,6 +80,8 @@ const ProfileHeader = ({
       countFollowers();
       countFollowing()
     },[connection])
+    // console.log("Userdata----------->",userData.user);
+    const myUserId = JSON.parse(localStorage.getItem('userDetails'))?.user_id;
     const countFollowers = async()=> {
       try{
         let userDetails = localStorage.getItem('userDetails');
@@ -284,6 +300,8 @@ const ProfileHeader = ({
       setIsOpen(false)
       onPictureRemove(true)
     }
+    // console.log("Userdata: ",userData.user);
+    
     const deletePicture = async(picType) => {
       try{
         const endpoint = picType === 'profile'
@@ -317,11 +335,112 @@ const ProfileHeader = ({
     const handleConnections = (type) => {
       setConnection(type)
     }
+    // console.log("userselector: ",userSelector.profile[0]?.name);
+    // console.log("userdata.follwongs: ",userData.followersCount);
+    const likeAlumni = async(liked_user_id) => {
+      try{
+        let userDetails = localStorage.getItem('userDetails')
+        userDetails=JSON.parse(userDetails)
+        const resp = await axios.post(`${apiurl}/userlike/like_alumni`,{
+          alumniId:userDetails.user_id,
+          likedAlumniId:liked_user_id
+        })
+        let res = resp.data
+        if(res.status != 'success'){
+          toast.error(res.message)
+        }else{
+          // fetchFollowers()
+          setUserData((prevUserData) => {
+            const updatedFollowers = Object.keys(prevUserData.followers).reduce((acc, key) => {
+              if (key !== "isFollowing") {
+                acc[key] = {
+                  ...prevUserData.followers[key],
+                  ...(prevUserData.followers[key].user_id === myUserId ? { isFollowing: true } : {}),
+                };
+              }
+              return acc;
+            }, {});
+          
+            return {
+              ...prevUserData,
+              followers: {
+                ...updatedFollowers,
+                isFollowing: true, 
+              },
+            };
+          });
+          
+          
+        }
+      }catch(err){
+        console.log(err);
+      }
+    }
+    const unLike = async(unliked__user_id) => {
+      try{
+        let userDetails = localStorage.getItem('userDetails')
+        userDetails=JSON.parse(userDetails)
+        const resp = await axios.post(`${apiurl}/userlike/unlike_alumni`,{
+          alumniId:userDetails.user_id,
+          unlikedAlumniId:unliked__user_id
+        })
+        let res = resp.data
+        if(res.status != 'success'){
+          toast.error(res.message)
+        }else{
+          setUserData((prevUserData) => {
+            const updatedFollowers = Object.keys(prevUserData.followers).reduce((acc, key) => {
+              if (key !== "isFollowing") {
+                acc[key] = {
+                  ...prevUserData.followers[key],
+                  ...(prevUserData.followers[key].user_id === myUserId ? { isFollowing: true } : {}),
+                };
+              }
+              return acc;
+            }, {});
+          
+            return {
+              ...prevUserData,
+              followers: {
+                ...updatedFollowers,
+                isFollowing: false, 
+              },
+            };
+          });
+          
+          
+        }
+
+      }catch(err){
+        console.log(err);
+      }
+    }
+    
     return (
       <div className="w-full lg:w-[80%] flex flex-col justify-center items-center bg-gray-100 shadow-md rounded-lg">
         {/* Cover Section */}
         <div className="w-full h-32 sm:h-48 md:h-64 lg:h-80 bg-blue-500 relative overflow-hidden">
-          <img src={coverPic ? `${imgurl}/${coverPic}` : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSiLff5M2CCoLu58Ybuz4BjyfYqTe3Ffv6Mng&s'} alt="Cover" className="object-fill w-full h-full" />
+          <Skeleton isLoaded={isLoaded} className={!isLoaded ? 'w-full rounded-sm border border-white':''}>
+              {
+                userData?.user.length > 0 ? (
+                  <img
+                    key={true}
+                    src={userData.user[0]?.cover ? `${imgurl}/${userData.user[0]?.cover}` : defaultCover}
+                    alt="Cover"
+                    className="object-fill w-full h-full" 
+                  />
+                ):(
+                  <img 
+                  key={true}
+                  src={coverPic ? `${imgurl}/${coverPic}` : defaultCover} 
+                  alt="Cover" 
+                  className="object-fill w-full h-full" 
+                  />
+                )
+              }
+          </Skeleton>
+          
+         
           <div
             className="absolute flex items-center bottom-3 right-6 cursor-pointer bg-white rounded-lg px-3.5 py-2 z-20"
             onClick={onCoverOptionsClick}
@@ -338,13 +457,26 @@ const ProfileHeader = ({
           {/* Profile Picture */}
           <div className="relative">
             <Skeleton isLoaded={isLoaded} className={!isLoaded ? 'rounded-full border-4 border-white shadow-lg':''}>
-              <img
-                key={true}
-                src={profilePic ? `${imgurl}/${profilePic}` : 'https://w7.pngwing.com/pngs/177/551/png-transparent-user-interface-design-computer-icons-default-stephen-salazar-graphy-user-interface-design-computer-wallpaper-sphere-thumbnail.png'}
-                alt="Profile"
-                className="w-32 h-32 md:w-40 md:h-40 rounded-full border-4 border-white shadow-lg object-cover"
-                style={{ aspectRatio: '1' }}
-              />
+              {
+                userData.user.length > 0 ? (
+                  <img
+                    // key={true}
+                    src={userData.user[0]?.profile ? `${imgurl}/${userData.user[0]?.profile}` : defaultProfile}
+                    alt="Profile"
+                    className="w-32 h-32 md:w-40 md:h-40 rounded-full border-4 border-white shadow-lg object-cover"
+                    style={{ aspectRatio: '1' }}
+                  />
+                ):(
+                  <img
+                    // key={true}
+                    src={profilePic ? `${imgurl}/${profilePic}` : defaultProfile}
+                    alt="Profile"
+                    className="w-32 h-32 md:w-40 md:h-40 rounded-full border-4 border-white shadow-lg object-cover"
+                    style={{ aspectRatio: '1' }}
+                  />
+                )
+              }
+              
             </Skeleton>
             <div className="absolute top-[65%] left-[77%] flex justify-center items-center">
               <div
@@ -415,18 +547,24 @@ const ProfileHeader = ({
           
           <div className="text-left ml-4 mt-4 md:mt-20">
             <Skeleton isLoaded={isLoaded} className={!isLoaded?'h-3 w-3/5 rounded-lg':''}>
-              <h2 className="text-2xl font-bold">{userSelector.profile[0]?.name}</h2>
+              <h2 className="text-2xl font-bold">
+              {userData.user.length === 0 ?userSelector.profile[0]?.name : userData.user[0]?.name }
+              </h2>
             </Skeleton>
             <Skeleton isLoaded={isLoaded} className={!isLoaded?'h-3 w-4/5 rounded-lg mt-2':''}>
-              <p className="text-lg text-gray-700 font-body">{userSelector.profile[0]?.designation}</p>
+              <p className="text-lg text-gray-700 font-body">
+              {userData.user[0]?.designation ? userData.user[0]?.designation : userSelector?.profile[0]?.designation}
+              </p>
             </Skeleton>
             <Skeleton isLoaded={isLoaded} className={!isLoaded?'h-3 w-5/5 mt-2 rounded-lg':''}>
-              <p className="text-sm text-gray-500 font-body">{userSelector.profile[0]?.location}</p>
+              <p className="text-sm text-gray-500 font-body">
+              {userData.user[0]?.location ? userData.user[0]?.location : userSelector.profile[0]?.location}
+              </p>
             </Skeleton>
             
           </div>
           {/* Edit Profile Button */}
-          {ownProfile ? (
+          {userData.user[0]?.user_id === myUserId ? (
             <div className="absolute right-0 flex mt-20" onClick={onEditProfileClick}>
               <MdEdit className="mr-2 w-8 h-8 xs:hidden" />
               <button className="xs:flex items-center px-4 py-2 bg-blue-500 text-white rounded-lg shadow-md hover:bg-blue-600 transition duration-300 ease-in-out hidden font-body">
@@ -435,9 +573,20 @@ const ProfileHeader = ({
               </button>
             </div>
           ) : (
-            <div className="flex justify-end items-center mt-20 md:mt-20 absolute right-8 lg:right-0">
-              <CiHeart className="w-10 h-10 cursor-pointer" />
-            </div>
+            userData.followers?.isFollowing ? (
+              <div className="flex justify-end items-center mt-20 md:mt-20 absolute right-8 lg:right-0" onClick={()=>unLike(userData.user[0]?.user_id)}>
+                <Skeleton isLoaded={isLoaded} className={!isLoaded?'h-10 w-5/5 rounded-lg':''}>
+                  <FaHeart size={38} className="text-red-600 cursor-pointer hover:text-red-500 transition-colors" />
+                </Skeleton>
+              </div>
+            ):(
+              <div className="flex justify-end items-center mt-20 md:mt-20 absolute right-8 lg:right-0" onClick={()=>likeAlumni(userData.user[0]?.user_id)}>
+                <Skeleton isLoaded={isLoaded} className={!isLoaded?'h-10 w-5/5 rounded-lg':''}>
+                  <CiHeart size={28} className="w-10 h-10 cursor-pointer" />
+                </Skeleton>
+                
+              </div>
+            )
           )}
         </div>
   
@@ -511,12 +660,27 @@ const ProfileHeader = ({
         }
         <div className="flex justify-center w-full mb-2">
           <div className="flex w-[95%] lg:w-[75%] justify-start space-x-4">
-            <div className='font-medium text-blue-700 hover:cursor-pointer hover:underline' onClick={()=>handleConnections('followers')}>{followersCount} followers</div>
-            <div className='font-medium text-blue-700 hover:cursor-pointer hover:underline' onClick={()=>handleConnections('following')}>{followingCount} following</div>
+            <Skeleton isLoaded={isLoaded} className={!isLoaded ? 'h-4 w-1/6 rounded-lg':''}>
+              <div className='font-medium text-blue-700 hover:cursor-pointer hover:underline' onClick={()=>handleConnections('followers')}>
+                {userData ? userData.followersCount : followersCount} followers
+              </div>
+            </Skeleton>
+            <Skeleton isLoaded={isLoaded} className={!isLoaded ? 'h-4 w-1/6 rounded-lg':''}>
+              <div className='font-medium text-blue-700 hover:cursor-pointer hover:underline' onClick={()=>handleConnections('following')}>
+                {userData? userData.followingCount:followingCount} following
+              </div>
+            </Skeleton>
             
           </div>
         </div>
-        {connection && <Followers connection={connection}  onClose={()=>setConnection(null)}/>}
+        {connection && 
+        <Followers 
+          connection={connection}  
+          onClose={()=>setConnection(null)}
+          followingsData={userData.followings}
+          followersData={userData.followers}
+          myFollowings = {userData.myFollowings}
+        />}
       </div>
       
     );

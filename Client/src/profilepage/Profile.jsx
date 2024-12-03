@@ -4,6 +4,8 @@ import Details from './Details';
 import ExperienceTimeline from './ExperienceTimeline';
 import ModalForm from './ModalForm';
 import UserProfileModal from './UserProfileModal';
+import { useLocation, useParams } from 'react-router-dom';
+import axios from 'axios';
 
 const Profile = () => {
   const [isEditProfileModalOpen, setIsEditProfileModalOpen] = useState(false);
@@ -22,7 +24,56 @@ const Profile = () => {
   //   showProfileOptions:false,
   //   showCoverOptions:false,
   // })
-
+  // const {id} = useParams()
+  const [userData,setUserData] = useState({
+    user:[],
+    followingCount:0,
+    followersCount:0,
+    followings:[],
+    followers:[],
+    myFollowings:[]
+  })
+  const [dataLoaded,setDataLoaded] = useState(false)
+  const [jobDetails,setJobDetails] = useState([])
+  const apiurl = import.meta.env.VITE_API_URL
+  const location = useLocation()
+  const {userId} = location.state || {}
+  const myUserId = JSON.parse(localStorage.getItem('userDetails'))?.user_id
+  
+  
+  const fetchUser = async() => {
+    try{
+      // console.log("Myuserid: ",myUserId," urlid: ",id);
+      const resp = await axios.post(`${apiurl}/users/get_user_details`,{
+        // user_id:id ? id : myUserId
+        user_id:userId ? userId : myUserId,
+        myUserId:myUserId
+      })
+      let res = resp.data;
+      if(res.status != 'success'){
+        console.log(res.message);
+      }else{
+        const result = {
+          user:res.extras.user,
+          followingCount:res.extras.followingCount[0]['COUNT(*)'],
+          followersCount:res.extras.followersCount[0]['COUNT(*)'],
+          followings:res.extras.followings,
+          followers:res.extras.followers,
+          myFollowings:res.extras.myFollowings
+        }
+        setUserData(result)
+        // console.log("profile: ",res.extras.experience);
+        
+        setJobDetails(res.extras.experience)
+        setDataLoaded(true)
+      }
+    }catch(err){
+      console.error(err);
+    }
+  }
+  useEffect(()=>{
+    fetchUser()
+  },[userId])
   const handleOpenModal = () => {
     setIsSeeProfileModalOpen(false)
     setShowProfileOptions(false)
@@ -128,9 +179,12 @@ const Profile = () => {
             isChooseCoverClicked={isChooseCoverClicked}
             setIsChooseCoverClicked={setIsChooseCoverClicked}
             onPictureRemove={handlePictureRemove}
+            userData = {userData}
+            setUserData={setUserData}
+            dataLoaded={dataLoaded}
           />
-          <Details />
-          <ExperienceTimeline />
+          <Details userData={userData} dataLoaded={dataLoaded}/>
+          <ExperienceTimeline jobDetails={jobDetails} dataLoaded={dataLoaded} />
           <ModalForm 
             isOpen={isEditProfileModalOpen} 
             onClose={handleCloseModal}

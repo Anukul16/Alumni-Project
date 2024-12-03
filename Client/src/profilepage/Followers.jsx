@@ -4,12 +4,15 @@ import { CiHeart } from "react-icons/ci";
 import { FaHeart } from "react-icons/fa";
 import axios from "axios";
 import toast from "react-hot-toast";
-const Followers = ({connection,onClose}) => {
+const Followers = ({connection,onClose,followingsData,followersData,myFollowings}) => {
   const { onOpenChange} = useDisclosure();
   const apiurl = import.meta.env.VITE_API_URL;
   const [followers,setFollowers] = useState([])
   const [following,setFollowing] = useState([])
-
+  // console.log("myFollowing: ",myFollowings);
+  console.log("follower",Array.isArray(followersData)," ",followersData);
+  const imgurl = import.meta.env.VITE_IMG_URL
+  
     const likeAlumni = async(liked_user_id) => {
       try{
         let userDetails = localStorage.getItem('userDetails')
@@ -85,7 +88,12 @@ const Followers = ({connection,onClose}) => {
         if(connection == 'followers'){
             fetchFollowers()
         }
+        
     },[connection])
+    useEffect(()=>{
+      console.log(followers);
+      
+    },[followers])
   return (
     <div className="flex flex-col gap-2">
       <Modal
@@ -104,7 +112,57 @@ const Followers = ({connection,onClose}) => {
               {connection == 'followers' ? 'Followers' : 'Following'}
             </ModalHeader>
             <ModalBody>
-            {(connection == 'followers' ? followers : connection == 'following' ? following :[]).map((u, idx) => (
+            {
+              (followingsData || followersData)
+              ?
+              (connection == 'followers' ? followersData.followers : connection == 'following' ? followingsData :[]).map((u, idx) => (
+                <div key={idx} className="flex items-center justify-between w-full p-4 border rounded-lg shadow-md bg-white max-w-md mx-auto">
+              
+                <div className="flex items-center gap-4">
+                    {/* User Photo */}
+                    <img
+                    // src={u.src}
+                    src={`${imgurl}/${u.profile}`}
+                    alt="User"
+                    className="w-16 h-16 rounded-full object-cover"
+                    />
+
+                    <div>
+                    <p className="font-semibold text-lg">{u.name}</p>
+                    <p className="text-sm text-gray-500">Batch of {u.passout_year}</p>
+                    </div>
+                </div>
+
+                {
+                  myFollowings.some((myFollowing) => myFollowing.user_id === u.user_id) ? (
+                    <FaHeart
+                      size={28}
+                      className="text-red-600 cursor-pointer hover:text-red-500 transition-colors"
+                      // onClick={() => unLike(u.user_id)}
+                    />
+                  ) : (
+                    <CiHeart
+                      size={38}
+                      className="text-gray-600 cursor-pointer hover:text-red-500 transition-colors"
+                      // onClick={() => likeAlumni(u.user_id)}
+                    />
+                  )
+                  
+                  // (connection == 'following')
+                  // ?
+                  // <FaHeart size={28} className="text-red-600 cursor-pointer hover:text-red-500 transition-colors" onClick={()=>unLike(u.user_id)} />
+                  // :
+                  // (connection == 'followers' && u.isFollowingBack)
+                  // ?
+                  // <FaHeart size={28} className="text-red-600 cursor-pointer hover:text-red-500 transition-colors" onClick={()=>unLike(u.user_id)}/>
+                  // :
+                  // <CiHeart size={38} className="text-gray-600 cursor-pointer hover:text-red-500 transition-colors" onClick={()=>likeAlumni(u.user_id)}/>
+                 
+                }
+                </div>
+            ))
+              :
+              (connection == 'followers' ? followers : connection == 'following' ? following :[]).map((u, idx) => (
                 <div key={idx} className="flex items-center justify-between w-full p-4 border rounded-lg shadow-md bg-white max-w-md mx-auto">
                 {/* Left side: User photo, name, and batch */}
                 <div className="flex items-center gap-4">
@@ -123,7 +181,6 @@ const Followers = ({connection,onClose}) => {
                     </div>
                 </div>
 
-                {/* Right side: Heart icon */}
                 {
                   (connection == 'following')
                   ?
@@ -136,7 +193,8 @@ const Followers = ({connection,onClose}) => {
                   <CiHeart size={38} className="text-gray-600 cursor-pointer hover:text-red-500 transition-colors" onClick={()=>likeAlumni(u.user_id)}/>
                  }
                 </div>
-            ))}
+            ))
+            }
             </ModalBody>
 
           </>

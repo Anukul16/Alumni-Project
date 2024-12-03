@@ -40,6 +40,8 @@ const Gallery = () => {
         section_name: section,
       });
       setYears(resp.data.extras[0]); 
+      console.log("IsArray: ",resp.data.extras[0]);
+      
       setTimeout(() => {
         setIsLoaded(true)
       }, 5000);
