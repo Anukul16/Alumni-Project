@@ -1,28 +1,32 @@
-import  { useEffect, useState } from 'react';
-import { FaUserCircle } from 'react-icons/fa';
-import {Avatar} from "@nextui-org/react";
-import { Link, useNavigate } from 'react-router-dom';
+<<<<<<< HEAD
+import { useEffect, useState } from "react";
+import { FaUserCircle } from "react-icons/fa";
+import { Avatar } from "@nextui-org/react";
+import { Link, useNavigate } from "react-router-dom";
+=======
+import  { useState } from 'react';
+
+import { Link } from 'react-router-dom';
+>>>>>>> 34fa07895dceb4d973f539bfdcb4986060f04679
 export default function CommonNavbar() {
   const [isOpen, setIsOpen] = useState(false);
-  const [isAuthenticated,setIsAuthenticated] = useState(false)
-  const [icon,setIcon] = useState(null)
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [icon, setIcon] = useState(null);
   const imgurl = import.meta.env.VITE_IMG_URL;
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const toggleMenu = () => {
     setIsOpen(!isOpen);
   };
-  useEffect(()=>{
-    let user = localStorage.getItem('userDetails')
-    user = JSON.parse(user)
-    if(user != null){
-      setIsAuthenticated(true)
-      setIcon(user.profile)
+  useEffect(() => {
+    let user = localStorage.getItem("userDetails");
+    user = JSON.parse(user);
+    if (user != null) {
+      setIsAuthenticated(true);
+      setIcon(user.profile);
     }
-  },[])
+  }, []);
 
   return (
-
-
     <div className="bg-primary text-white py-4 px-8 font-body z-20">
       {/* Top Section: Company Name and Slogan */}
       <div className="flex justify-between items-center">
@@ -32,35 +36,33 @@ export default function CommonNavbar() {
             Where Alumni are Excellence Unite
           </span>
         </div>
-        {
-          isAuthenticated ? (
-            <div
-          className="w-8 h-8 sm:w-12 sm:h-12 rounded-full bg-white flex items-center justify-center transition-transform duration-200 hover:cursor-pointer hover:scale-110 hover:bg-gray-200"
-          // onClick={() => setIsModalOpen(!isModalOpen)} 
-        >
-          {/* <FaUserCircle className="text-gray-600 w-6 h-6 sm:w-10 sm:h-10" />{" "} */}
+        {isAuthenticated ? (
           <div
-            className="w-8 h-8 sm:w-12 sm:h-12 rounded-full  flex items-center justify-center transition-transform duration-200 hover:scale-10 hover:bg-gray-200"
-            onClick={() => navigate('/profile')} 
+            className="w-8 h-8 sm:w-12 sm:h-12 rounded-full bg-white flex items-center justify-center transition-transform duration-200 hover:cursor-pointer hover:scale-110 hover:bg-gray-200"
+            // onClick={() => setIsModalOpen(!isModalOpen)}
           >
-            {
-              icon
-              ?
-                <Avatar isBordered color="primary" src={`${imgurl}/${icon}`} className='w-full h-full'/>
-              :
-                <Avatar showFallback src='https://images.unsplash.com/broken' />
-            }
-          </div>
-        </div>
-          ):(
-            <div className="hidden md:flex">
-              <div>Register/Login</div>
+            {/* <FaUserCircle className="text-gray-600 w-6 h-6 sm:w-10 sm:h-10" />{" "} */}
+            <div
+              className="w-8 h-8 sm:w-12 sm:h-12 rounded-full  flex items-center justify-center transition-transform duration-200 hover:scale-10 hover:bg-gray-200"
+              onClick={() => navigate("/profile")}
+            >
+              {icon ? (
+                <Avatar
+                  isBordered
+                  color="primary"
+                  src={`${imgurl}/${icon}`}
+                  className="w-full h-full"
+                />
+              ) : (
+                <Avatar showFallback src="https://images.unsplash.com/broken" />
+              )}
             </div>
-          )
-        }
-        
-        
-        
+          </div>
+        ) : (
+          <div className="hidden md:flex">
+            <div>Register/Login</div>
+          </div>
+        )}
 
         {/* Hamburger Menu for Mobile */}
         <div className="md:hidden">
