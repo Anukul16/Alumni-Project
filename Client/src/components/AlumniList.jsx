@@ -1,20 +1,22 @@
 import { useEffect, useState } from 'react';
 import SearchBarWithFilter from './SearchBarWithFilter';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const AlumniList = () => {
   const [alumniData, setAlumniData] = useState([]);
+  const navigate = useNavigate()
   // const [filteredData, setFilteredData] = useState([]);
   // const [selectedCompany, setSelectedCompany] = useState(null);
   // const [selectedBatch, setSelectedBatch] = useState(null);
   // const [selectedTechStack, setSelectedTechStack] = useState(null);
-
+  const apiurl = import.meta.env.VITE_API_URL
   const imageUrl = import.meta.env.VITE_IMG_URL;
 
   // Fetch all alumni on component mount
   const getAllAlumni = async () => {
     try {
-      const response = await axios.post('http://localhost:3000/users/getAllAlumni');
+      const response = await axios.post(`${apiurl}/users/getAllAlumni`);
       setAlumniData(response.data.extras);
     } catch (error) {
       console.error('Error fetching alumni:', error);
@@ -25,7 +27,7 @@ const AlumniList = () => {
   const getAlumniByCompany = async (company) => {
     try {
       console.log('Making API call with company:', company);
-      const response = await axios.post('http://localhost:3000/users/getAllUserOfACompany', {
+      const response = await axios.post(`${apiurl}/users/getAllUserOfACompany`, {
         com:company,
       });
   
@@ -44,7 +46,7 @@ const AlumniList = () => {
 
   const getAlumniByBatch = async(batch)=>{
     try {
-      const response = await axios.post('http://localhost:3000/users/getBatchWise' , {
+      const response = await axios.post(`${apiurl}/users/getBatchWise` , {
         passoutYear:batch
       })
       const data = response.data.extras;
@@ -60,7 +62,7 @@ const AlumniList = () => {
   const getAlumniByTechStack = async(tech)=>{
     try {
       console.log("data is : #############");
-      const response = await axios.post('http://localhost:3000/users/techStackWise' ,
+      const response = await axios.post(`${apiurl}/users/techStackWise` ,
         {techStack:tech}
       )
       const data = response.data.extras;
@@ -119,7 +121,13 @@ const AlumniList = () => {
   };
 
   const groupedAlumni = groupByBatch(alumniData);
-
+  const handleUserClick = (alumni) => {
+    let path = alumni.name.replace(/\s+/g, '').toLowerCase()+alumni.id;
+    navigate(`/profile/${path}`,{
+      state:{userId:alumni.user_id}
+    })
+    
+  }
   return (
     <>
       <SearchBarWithFilter onFilterChange={handleFilterChange} searchQuery={handleSearchQuery} />
@@ -130,7 +138,7 @@ const AlumniList = () => {
           Object.keys(groupedAlumni).map((batch) => (
             <div
               key={batch}
-              className="mb-8 p-4 bg-white shadow-lg rounded-xl transform transition-transform hover:scale-105"
+              className="mb-8 p-4 bg-white shadow-lg rounded-xl transform transition-transform"
             >
               <h2 className="text-3xl font-bold text-purple-700 mb-6 text-center">{batch} Alumni</h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6">
@@ -138,9 +146,10 @@ const AlumniList = () => {
                   <div
                     key={alumni.id}
                     className="flex flex-col items-center p-6 bg-gradient-to-r border from-purple-50 to-indigo-50 rounded-lg shadow-md hover:cursor-pointer hover:shadow-xl transition-shadow duration-200"
+                    onClick={()=>handleUserClick(alumni)}
                   >
                     <img
-                      src={`${imageUrl}/${alumni.profile}`}
+                      src={alumni.profile?`${imageUrl}/${alumni.profile}`:'https:upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg'}
                       alt={`${alumni.name}'s photo`}
                       className="w-28 h-28 rounded-full mb-4 border-4 border-purple-300 object-cover shadow-lg"
                     />

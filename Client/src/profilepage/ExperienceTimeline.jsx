@@ -5,46 +5,33 @@ import { FaBriefcase } from 'react-icons/fa';
 import { useDispatch } from 'react-redux';
 import { updateExperience, updateProfileDetails } from '../redux/slices/UserSlice';
 import { Skeleton } from '@nextui-org/skeleton';
+import { useParams } from 'react-router-dom';
 
 
 
-const ExperienceTimeline = () => {
+const ExperienceTimeline = ({jobDetails,dataLoaded}) => {
     const apiurl = import.meta.env.VITE_API_URL;
     
     const dispatch = useDispatch();
-    const [experiences,setExperiences] = useState([])
-    const [isLoaded,setIsLoaded] = useState(false)
-    const fetchProfileDetails = async() => {
-      try{
-        let userDetails = localStorage.getItem('userDetails')
-        userDetails=JSON.parse(userDetails)
-        const resp = await axios.post(`${apiurl}/users/fetch_profile`,{
-          alumniId:userDetails.user_id
-        })
-        const res = resp.data
-        // console.log(res);
-        
-        if(res.status != 'success'){
-
-        }else{
-          // console.log("Isarray: ",Array.isArray(res.extras[0].formattedExperience))
-          dispatch(updateProfileDetails(res.extras[0].profile))
-          dispatch(updateExperience(res.extras[0].formattedExperience))
-          setExperiences(res.extras[0].formattedExperience)
-          // console.log(res.extras[0].formattedExperience);
-          
-        }
-      }catch(err){
-        console.log(err);
-      }
-    }
+    const [experiences, setExperiences] = useState([]);
+    const [isLoaded,setIsLoaded] = useState(dataLoaded)
+    const {id} = useParams()
+    // console.log("Jobdetails: ",Array.isArray(jobDetails)," ",jobDetails);
     useEffect(()=>{
-      fetchProfileDetails()
-    },[])
-  
+      setExperiences(()=>jobDetails)
+      
+    },[jobDetails])
+    // console.log("DataloadedExp: ",dataLoaded);
+    useEffect(()=>{
+      if(dataLoaded){
+        setTimeout(() => {
+          setIsLoaded(dataLoaded)
+        }, 2000);
+      }
+    },[dataLoaded])
     return (
       <div className="mt-8 w-full lg:w-[80%] p-4 bg-gray-100 rounded-lg shadow-lg z-30">
-        <h2 className="text-2xl font-bold mb-6">Professional Experience</h2>
+        <h2 className="text-2xl font-bold mb-6">Professional Experience</h2> 
   
         {/* Timeline container */}
         <div className="relative">
@@ -71,7 +58,7 @@ const ExperienceTimeline = () => {
               </div>
   
               {/* Roles within the company */}
-              {exp.roles.map((role, roleIndex) => (
+              {exp.roles && Array.isArray(exp.roles) && exp.roles.length > 0 &&  exp.roles.map((role, roleIndex) => (
                 <div key={roleIndex} className="relative pl-8 mb-8">
                   {/* Circle inside the road */}
                   <div className={`absolute left-[-1.9px] top-4 w-4 h-4 rounded-full 

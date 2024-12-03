@@ -9,7 +9,7 @@ const SearchBarWithFilter = ({ onFilterChange } , searchQuery) => {
   const [batches, setBatches] = useState([]);
   const [techStacks, setTechStacks] = useState([]);
   const { isOpen, onOpen, onClose } = useDisclosure();
-
+  const apiurl = import.meta.env.VITE_API_URL
   const handleSearchChange = (e) => {
     setSearchTerm(e.target.value);
     searchQuery(searchTerm);
@@ -18,7 +18,7 @@ const SearchBarWithFilter = ({ onFilterChange } , searchQuery) => {
   // Fetch all data from the company API
   const getAllCompanies = async () => {
     try {
-      const response = await axios.post('http://localhost:3000/users/getAllCompanyName');
+      const response = await axios.post(`${apiurl}/users/getAllCompanyName`);
       const companyNames = response.data.extras
         .map((item) => item.company)
         .filter((company) => company !== null);
@@ -32,14 +32,14 @@ const SearchBarWithFilter = ({ onFilterChange } , searchQuery) => {
 
   const getAllBatches = async () => {
     try {
-      const response = await axios.post('http://localhost:3000/users/getAllBatchYears');
+      const response = await axios.post(`${apiurl}/users/getAllBatchYears`);
       const batchYears = response.data.extras;
       
       // Correcting the typo here
       const uniqueBatchYears = [...new Set(batchYears.map(batch => batch.passout_year))];
       
       setBatches(uniqueBatchYears);
-      console.log(uniqueBatchYears); // Check if the unique batch years are logged correctly
+      // console.log(uniqueBatchYears); 
     } catch (error) {
       console.log(error);
     }
@@ -48,12 +48,12 @@ const SearchBarWithFilter = ({ onFilterChange } , searchQuery) => {
 
   const getAllTechStacks = async () => {
     try {
-      const response = await axios.post('http://localhost:3000/users/getAllTechStacks');
+      const response = await axios.post(`${apiurl}/users/getAllTechStacks`);
       const skillArray = response.data.extras.filter((item)=>item.skills).flatMap((item)=>item.skills.split(','));
       const uniqueSkills = [...new Set(skillArray)];
       setTechStacks(uniqueSkills);
 
-      console.log("Fetching all tech stacks...");
+      // console.log("Fetching all tech stacks...");
       // Your logic to fetch tech stacks
     } catch (error) {
       console.log(error);
